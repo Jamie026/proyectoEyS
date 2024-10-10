@@ -6,9 +6,9 @@ async function registrarUsuario(data) {
     data.codigo_pais = parseInt(data.codigo_pais);
     data.telefono = parseInt(data.telefono);
     
-    const validations = await validationRegister(data);
-    if (validations.length > 0) 
-        response = { status: 400, data: validations };
+    const validations_errors = await validationRegister(data);
+    if (validations_errors) 
+        return { status: 400, data: validations_errors };
 
     data.clave = await encrypt(data.clave);
     const insertSql = "INSERT INTO usuarios (nombre, apellido, codigo_pais, telefono, usuario, clave) VALUES ?";

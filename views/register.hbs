@@ -2,8 +2,8 @@
     {{> navbar}}
 
     <div class="container">
-        <form class="container-form" action="/register" method="post">
-            <h2 class="container-subtitle">Ingrese los datos solicitados</h2>
+        <form class="container-form" action="/register" method="POST" id="register">
+            <h2 class="container-subtitle text-light">Ingrese los datos solicitados</h2>
             <div class="input-group my-3">
                 <input type="text" class="form-control" placeholder="Nombre" name="nombre" aria-label="Nombre">
             </div>
@@ -13,7 +13,7 @@
             <div class="input-group my-3">
                 <select class="form-select"name="codigo_pais">
                     <option value="">Código de país</option>
-                    <option value="93">Afghanistan +93</option>
+                    <option value="aa">Afghanistan +93</option>
                     <option value="358">Aland Islands +358</option>
                     <option value="355">Albania +355</option>
                     <option value="213">Algeria +213</option>
@@ -269,6 +269,7 @@
             <div class="input-group my-3">
                 <input type="tel" class="form-control" placeholder="Teléfono" name="telefono" aria-label="Teléfono">
             </div>
+            <div id="inputHelp" class="form-text text-light">El usuario y la clave deben tener al menos 8 caracteres y solo pueden contener letras y números.</div>
             <div class="input-group my-3">
                 <span class="input-group-text">
                     <i class="fa-solid fa-user"></i>

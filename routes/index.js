@@ -14,7 +14,9 @@ router.get("/register", (request, response) => {
     response.render("register");
 });
 
-router.post("/register", async (request, response) => {
+router.post("/register", async (request, response) => {    
+    console.log(request.body);
+    
     const registroResponse = await registrarUsuario(request.body);
     response.status(registroResponse.status).json(registroResponse);
 });

@@ -4,12 +4,11 @@ const niv = require('node-input-validator');
 niv.setLang("es");
 
 niv.extendMessages({
+    numeric: "El campo :attribute solo puede contener números.",
     required: "El campo :attribute es obligatorio.",
     regex: "El formato del campo :attribute no es válido.",
-    min: "El campo :attribute debe contener al menos :min caracteres.",
-    max: "El campo :attribute no puede exceder los :max caracteres.",
     alpha: "El campo :attribute solo puede contener letras.",
-    numeric: "El campo :attribute solo puede contener números."
+    length: "El campo :attribute debe tener mínimo 8 caracteres y máximo 20"
 }, "es");
 
 
@@ -20,8 +19,8 @@ async function validationRegister(data) {
         apellido: "required|alpha",
         codigo_pais: "required|numeric",
         telefono: "required|numeric",
-        usuario: "required|min:8|max:20",
-        clave: "required|min:8|max:20"
+        usuario: "required|length:20,8|alphaNumeric",
+        clave: "required|length:20,8|alphaNumeric"
     });
 
     const matched = await register.check();
