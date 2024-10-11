@@ -34,6 +34,4 @@ function registrarUsuario() {
 window.onload = () => {
     if (document.getElementById("register"))
         registrarUsuario();
-    else if (document.getElementById("login"))
-        loginUsuario();
 };

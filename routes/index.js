@@ -8,7 +8,8 @@ router.get("/", (request, response) => {
 });
 
 router.get("/login", (request, response) => {
-    response.render("login");
+    const error = request.query.error || null; 
+    response.render("login", { error }); 
 });
 
 router.get("/register", async (request, response) => {
@@ -19,16 +20,28 @@ router.post("/login", async (request, response) => {
     const loginResponse = await loginUsuario(request.body);
     if (loginResponse.status === 200){
         const token = generateToken(loginResponse.email);
+        request.session.token = token;
         response.render("check");
     }
-        
-    else
-        response.redirect("/login");
+    else{
+        const error = loginResponse.message;
+        response.redirect("/login?error=" + error);
+    }
 });
 
 router.post("/register", async (request, response) => {        
     const registroResponse = await registrarUsuario(request.body);
     response.status(registroResponse.status).json(registroResponse);
+});
+
+router.post("/authentication", async (request, response) => {
+    const userToken = request.body.codigo_mfa;
+    const sessionToken = request.session.token;
+    if (userToken == sessionToken) {
+        response.send("Autenticación exitosa");
+    } else {
+        response.status(401).send("Código MFA inválido");
+    }
 });
 
 module.exports = router;

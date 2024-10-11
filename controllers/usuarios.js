@@ -7,7 +7,7 @@ async function registrarUsuario(data) {
     const validationErrors = await validationRegister(data);
     if (validationErrors) return { status: 400, data: validationErrors };
 
-    data.clave = await encrypt(data.clave);
+    data.clave = encrypt(data.clave);
 
     const insertSql = "INSERT INTO usuarios (nombre, apellido, email, usuario, clave) VALUES ?";
     const values = [Object.values(data)];

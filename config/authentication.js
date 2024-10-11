@@ -1,8 +1,8 @@
 const bcrypt = require("bcrypt");
 
-async function encrypt(password){
+function encrypt(password){
     const salt = bcrypt.genSaltSync(10);
-    const hash = await bcrypt.hashSync(password, salt);
+    const hash = bcrypt.hashSync(password, salt);
     return hash;
 }
 

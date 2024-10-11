@@ -1,7 +1,6 @@
 const { Validator } = require("node-input-validator");
 const niv = require('node-input-validator');
 const nodemailer = require('nodemailer');
-const { encrypt } = require("./authentication");
 require('dotenv').config();
 
 niv.setLang("es");
@@ -39,7 +38,7 @@ async function validationLogin(data) {
     return matched? null : login.errors;
 }
 
-async function generateToken(email) {
+function generateToken(email) {
     try {
         const token = Math.floor(1000 + Math.random() * 9000);
 
@@ -59,8 +58,7 @@ async function generateToken(email) {
         };
 
         transporter.sendMail(mailOptions);
-        const encryptedToken = await encrypt(token);
-        return encryptedToken;
+        return token;
     } catch (error) {
         console.error("Error al generar token", error);
         return null;
