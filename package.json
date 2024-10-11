@@ -17,7 +17,9 @@
     "express": "^4.21.1",
     "express-handlebars": "^8.0.1",
     "mysql": "^2.18.1",
+    "mysql2-promise": "^0.1.4",
     "node-input-validator": "^4.5.1",
+    "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7"
   }
 }

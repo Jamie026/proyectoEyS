@@ -22,6 +22,8 @@ function registrarUsuario() {
                 else
                     alertify.notify(result.message, "error", 5);
             }
+            else if (result.status === 201)
+                alertify.notify("Usuario registrado correctamente", "success", 5);
         } catch (error) {
             console.error("Error al enviar el formulario:", error);   
             alertify.notify("Hubo un error al intentar registrar al usuario. Intente más tarde.", "error", 5);
@@ -32,4 +34,6 @@ function registrarUsuario() {
 window.onload = () => {
     if (document.getElementById("register"))
         registrarUsuario();
+    else if (document.getElementById("login"))
+        loginUsuario();
 };
