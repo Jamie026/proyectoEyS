@@ -44,7 +44,7 @@ function loginUsuario(data) {
             const isPasswordValid = compare(data.clave, user.clave);
 
             return resolve(isPasswordValid
-                ? { status: 200, message: "Sesión iniciada exitosamente.", email: user.email }
+                ? { status: 200, message: "Sesión iniciada exitosamente.", user: user }
                 : { status: 401, message: "Contraseña incorrecta." });
         });
     });

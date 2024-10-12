@@ -17,6 +17,7 @@
     "express": "^4.21.1",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
     "mysql": "^2.18.1",
     "mysql2-promise": "^0.1.4",
     "node-input-validator": "^4.5.1",

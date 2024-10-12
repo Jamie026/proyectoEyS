@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const dashboard = express.Router();
 
-dashboard .get('/', function (request, response) {
-    response.render('index');
+dashboard .get("/", function (request, response) {
+    response.render("dashboard", { success: "Inicio de Sesión exitoso." });
 });
 
 module.exports = dashboard ;

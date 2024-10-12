@@ -1,7 +1,5 @@
 const { Validator } = require("node-input-validator");
 const niv = require('node-input-validator');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
 
 niv.setLang("es");
 
@@ -38,31 +36,4 @@ async function validationLogin(data) {
     return matched? null : login.errors;
 }
 
-function generateToken(email) {
-    try {
-        const token = Math.floor(1000 + Math.random() * 9000);
-
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_SENDER,
-                pass: process.env.EMAIL_SENDER_PASSWORD
-            }
-        })
-
-        const mailOptions = {
-            from: process.env.EMAIL_SENDER,
-            to: email,
-            subject: "Autenticación de usuario",
-            text: `Tu código de verificación es: ${token}`
-        };
-
-        transporter.sendMail(mailOptions);
-        return token;
-    } catch (error) {
-        console.error("Error al generar token", error);
-        return null;
-    }
-};
-
-module.exports = { validationRegister, validationLogin, generateToken };
+module.exports = { validationRegister, validationLogin };
