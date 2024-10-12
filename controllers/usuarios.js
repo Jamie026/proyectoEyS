@@ -29,7 +29,6 @@ async function registrarUsuario(data) {
     });
 }
 
-
 function loginUsuario(data) {
     const selectSql = "SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1";
     const values = [data.usuario];
