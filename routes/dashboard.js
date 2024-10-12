@@ -1,9 +1,10 @@
 const express = require("express");
 const dashboard = express.Router();
 const dashboardController = require("./../controllers/dashboard");
+const { onlyAdmin } = require("./../config/middlewares");
 
-dashboard.get("/", dashboardController.homePage);
+dashboard.get("/", onlyAdmin, dashboardController.homePage);
 
-dashboard.get("/logout", dashboardController.logout);
+dashboard.get("/logout", onlyAdmin, dashboardController.logout);
 
 module.exports = dashboard ;

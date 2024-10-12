@@ -3,6 +3,7 @@ const app = express();
 const path = require("path");
 const handlebars = require("express-handlebars");
 const session = require("express-session");
+const cookieParser = require("cookie-parser")
 require('dotenv').config();
 
 const port = 3000;
@@ -29,6 +30,7 @@ const bodyParser = require("body-parser");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 const router = require("./routes/index.js");
 const dashboard = require("./routes/dashboard.js");

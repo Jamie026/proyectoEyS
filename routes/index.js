@@ -1,18 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("./../controllers/usuarios");
+const { onlyPublic } = require("../config/middlewares");
 require('dotenv').config();
 
-router.get("/", userController.homePage);
+router.get("/", onlyPublic, userController.homePage);
 
-router.get("/login", userController.loginGET);
+router.get("/login", onlyPublic, userController.loginGET);
 
-router.get("/register", userController.registerGET);
+router.get("/register", onlyPublic, userController.registerGET);
 
-router.post("/login", userController.loginUsuarioPOST);
+router.post("/login", onlyPublic, userController.loginUsuarioPOST);
 
-router.post("/register", userController.registerUsuarioPOST);
+router.post("/register", onlyPublic, userController.registerUsuarioPOST);
 
-router.post("/authentication", userController.authenticationUsuario);
+router.post("/authentication", onlyPublic, userController.authenticationUsuario);
 
 module.exports = router;
