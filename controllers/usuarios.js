@@ -24,50 +24,47 @@ async function registerUsuarioPOST(request, response) {
         return response.status(400).json({ status: 400, data: validationErrors });
     data.clave = encrypt(data.clave);
 
-    const insertSql = "INSERT INTO usuarios (nombre, apellido, email, usuario, clave) VALUES ?";
-    const values = [Object.values(data)];
+    try {
+        const insertSql = "INSERT INTO usuarios (nombre, apellido, email, usuario, clave) VALUES ?";
+        const values = [Object.values(data)];
+        await pool.query(insertSql, [values]);
+        return response.status(201).json({ status: 201, message: "Usuario registrado correctamente." });
+    } catch (error) {
+        let errorMessage = "Error al registrar al usuario.";
+        
+        if (error.message.includes("USUARIO_UNICO"))
+            errorMessage = "El nombre de usuario ya está en uso.";
+        else if (error.message.includes("EMAIL_UNICO"))
+            errorMessage = "El email ya está en uso.";
 
-    pool.query(insertSql, [values], (error, result) => {
-        if (error) {
-            if (error.code === "ER_DUP_ENTRY") {
-                const message = error.sqlMessage.includes("USUARIO_UNICO")
-                    ? "El nombre de usuario ya está en uso."
-                    : "Ya existe un usuario con este correo electrónico.";
-                return response.status(400).json({ status: 400, message: message });
-            }
-            console.error("Error al registrar al usuario", error.stack);
-            return response.status(500).json({ status: 500, message: "Error al registrar al usuario." });
-        }
-        return response.status(201).json({ status: 201, message: "Usuario registrado exitosamente." });
-    });
+        return response.status(400).json({ status: 400, message: errorMessage });
+    }
 }
 
-function loginUsuarioPOST(request, response) {
+async function loginUsuarioPOST(request, response) {
     const { usuario, clave } = request.body;
-    const selectSql = "SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1";
-
-    pool.query(selectSql, [usuario], (error, result) => {
-        if (error) 
-            return response.redirect("/login?error=Error al iniciar sesión");
-
-        if (result.length === 0) 
+    
+    try {
+        const selectSql = "SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1";
+        const results = await pool.query(selectSql, [usuario]);
+        if (results[0].length === 0)
             return response.redirect("/login?error=Usuario no encontrado o no tiene permisos para acceder.");
-
-        const user = result[0];
-
+        const user = results[0][0];
         if (!compare(clave, user.clave)) 
             return response.redirect("/login?error=Contraseña incorrecta.");
         request.session.token = generateToken(user.email);
         request.session.user = user;
         return response.render("check");
-    });
+    } catch (error) {
+        return response.redirect("/login?error=Error al iniciar sesión");
+    }
 }
 
 function authenticationUsuario(request, response) {
     const userToken = request.body.codigo_mfa;
     const sessionToken = request.session.token;
     if (userToken == sessionToken){
-        const user = request.session.user;
+        const user = request.session.user;        
         const token = jsonwebtoken.sign(
             { user: user.usuario }, 
             process.env.TOKEN_PRIVATE_KEY,

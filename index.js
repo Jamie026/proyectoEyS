@@ -34,8 +34,10 @@ app.use(cookieParser())
 
 const router = require("./routes/index.js");
 const dashboard = require("./routes/dashboard.js");
+const storage = require("./routes/storage.js");
 
 app.use("/", router);
 app.use("/dashboard", dashboard);
+app.use("/storage", storage);
 
 app.listen(port, () => console.log(`App listening to port ${port}`));

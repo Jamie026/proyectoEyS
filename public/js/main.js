@@ -1,3 +1,139 @@
+const legendMargin = {
+    id: "legendMargin",
+    afterInit(chart, args, plugins) {
+        const originalFit = chart.legend.fit;
+        const margin = plugins.margin || 0;
+        chart.legend.fit = function fit(){
+            if (originalFit) 
+                originalFit.call(this);
+            return this.height += margin
+        }
+    }
+}
+
+async function getCustomersByCountry(container) {
+
+    const customersByCountry = await axios.get("http://localhost:3000/storage/customersByCountry");
+    const customersActive = customersByCountry.data.data.Activo[0];
+    const customersInactive = customersByCountry.data.data.Inactivo[0];
+
+    const cantidadescustomersActive = customersActive.map(customer => customer.Cantidad);
+    const cantidadescustomersInactive = customersInactive.map(customer => customer.Cantidad);
+
+    console.log(cantidadescustomersActive, cantidadescustomersInactive);
+    
+
+    container.height = 400;
+
+    new Chart(container, {
+        type: "bar",
+        data: {
+            labels: customersActive.map(customer => customer.Geography),
+            datasets: [{
+                label: "Clientes activos",
+                data: cantidadescustomersActive,
+                backgroundColor: "#FFCC99", 
+                borderColor: "#FFB266",
+                borderWidth: 1
+            },
+            {
+                label: "Clientes inactivos",
+                data: cantidadescustomersInactive,
+                backgroundColor: "#FFDAB9",
+                borderColor: "#FFCBA4",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            plugins: {
+                legendMargin: {
+                    margin: 50
+                },
+                title: {
+                    display: true,
+                    text: "Clientes Activos e Inactivos por país",
+                    color: "black",
+                    font: {
+                        size: 18,
+                        family: "'Poppins', 'Roboto', sans-serif"
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: "black",
+                        font: {
+                            family: "'Poppins', 'Roboto', sans-serif", 
+                            size: 14
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [legendMargin] 
+    });
+}
+
+async function getCardTypes(container) {
+
+    const cardTypes = await axios.get("http://localhost:3000/storage/cardTypes");
+
+    const cantidades = cardTypes.data.data.map(cardType => cardType["Cantidad"]);
+    const tipos = cardTypes.data.data.map(cardType => cardType["Card Type"]);
+    container.height = 400;
+    
+    new Chart(container, {
+        type: "doughnut",
+        data: {
+            labels: tipos,
+            datasets: [{
+                data: cantidades,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: false,
+            plugins: {
+                legendMargin: {
+                    margin: 50
+                },
+                title: {
+                    display: true,
+                    text: "Distribución de tipos de tarjetas de clientes",
+                    color: "black",
+                    font: {
+                        size: 18,
+                        family: "'Poppins', 'Roboto', sans-serif"
+                    }
+                },
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                        let percentage = (value * 100 / sum).toFixed(2) + "%";
+                        return percentage;
+                    },
+                    color: "white",
+                    font: {
+                        size: 14,
+                        family: "'Poppins', 'Roboto', sans-serif"
+                    }
+                },
+                legend: {
+                    labels: {
+                        color: "black",
+                        font: {
+                            family: "'Poppins', 'Roboto', sans-serif", 
+                            size: 14
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels, legendMargin] 
+    });
+}
+
+
 function registrarUsuario() {
     const formulario = document.getElementById("register");
 
@@ -34,6 +170,14 @@ function registrarUsuario() {
     });
 }
 
+async function dashboard() {
+
+    await getCardTypes(document.getElementById("doughnut"));
+    await getCustomersByCountry(document.getElementById("bar"));
+
+}
+
 window.onload = () => {
     if (document.getElementById("register")) registrarUsuario();
+    if (document.getElementById("dashboard")) dashboard(); 
 };

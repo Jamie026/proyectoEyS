@@ -4,22 +4,26 @@
     {{> error_message}}
 
     <div class="container">
-        <form class="container-form" action="/login" method="POST" id="login">
-            <h2 class="container-subtitle text-light">Ingrese los datos solicitados</h2>
-            <div class="input-group my-3">
-                <span class="input-group-text">
-                    <i class="fa-solid fa-user"></i>
-                </span>
-                <input type="text" class="form-control" placeholder="Username" name="usuario" aria-label="Username">
+        <div class="row">
+            <div class="col-6 mx-auto mt-4">
+                <form class="container-card" action="/login" method="POST" id="login">
+                    <h2 class="container-subtitle">Ingrese los datos solicitados</h2>
+                    <div class="input-group my-3">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Username" name="usuario" aria-label="Username">
+                    </div>
+                    <div class="input-group my-3">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" placeholder="Password" name="clave" aria-label="Password">
+                    </div>
+                    <input type="submit" class="btn btn-secondary w-100" value="Aceptar">
+                </form>
             </div>
-            <div class="input-group my-3">
-                <span class="input-group-text">
-                    <i class="fa-solid fa-lock"></i>
-                </span>
-                <input type="password" class="form-control" placeholder="Password" name="clave" aria-label="Password">
-            </div>
-            <input type="submit" class="btn btn-light w-100" value="Aceptar">
-        </form>
+        </div>
     </div>
 
 </main>
