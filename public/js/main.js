@@ -14,7 +14,9 @@ const legendMargin = {
 }
 
 async function getGeneralInformation(container) {
-    const generalInformation = await axios.get("http://localhost:3000/storage/generalInformation");
+    const generalInformation = await axios.get("http://localhost:3000/storage/generalInformation");    
+    alertify.notify("Cargando información...", "warning", 5);
+
     const complains = generalInformation.data.data["complain"][0];
     const creditCard = generalInformation.data.data["creditCard"][0];
     const notCreditCard = generalInformation.data.data["notCreditCard"][0];
@@ -24,6 +26,14 @@ async function getGeneralInformation(container) {
     document.getElementById("complains").textContent = complains[0].Complain;
     document.getElementById("cards").textContent = creditCard[0].Card;
     document.getElementById("notCards").textContent = notCreditCard[0].notCard;
+
+    if(total[0].total != 0){
+        await getCardTypes(document.getElementById("doughnut"));
+        await getCustomersByCountry(document.getElementById("bar"));
+        alertify.notify("Dashboard cargado con éxito.", "success", 5);
+    }
+    else
+        alertify.notify("No hay informacion disponible para mostrar", "success", 5);
 }
 
 async function getCustomersByCountry(container) {
@@ -31,10 +41,8 @@ async function getCustomersByCountry(container) {
     const customersByCountry = await axios.get("http://localhost:3000/storage/customersByCountry");
     const customersActive = customersByCountry.data.data.Activo[0];
     const customersInactive = customersByCountry.data.data.Inactivo[0];
-
     const cantidadescustomersActive = customersActive.map(customer => customer.Cantidad);
     const cantidadescustomersInactive = customersInactive.map(customer => customer.Cantidad);
-
     container.height = 400;
 
     new Chart(container, {
@@ -89,7 +97,6 @@ async function getCustomersByCountry(container) {
 async function getCardTypes(container) {
 
     const cardTypes = await axios.get("http://localhost:3000/storage/cardTypes");
-
     const cantidades = cardTypes.data.data.map(cardType => cardType["Cantidad"]);
     const tipos = cardTypes.data.data.map(cardType => cardType["Card Type"]);
     container.height = 400;
@@ -184,10 +191,11 @@ function registrarUsuario() {
 }
 
 async function dashboard() {
-
-    await getCardTypes(document.getElementById("doughnut"));
-    await getCustomersByCountry(document.getElementById("bar"));
-    await getGeneralInformation(document.getElementById("container-mini-cards"));
+    try {
+        await getGeneralInformation(document.getElementById("container-mini-cards"));
+    } catch (error) {
+        alertify.notify("Error al conectar con la base de datos del dashboard", "error", 5);
+    }
 }
 
 window.onload = () => {
