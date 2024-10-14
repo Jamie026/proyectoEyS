@@ -7,4 +7,6 @@ storage.get("/cardTypes", onlyAdmin, storageController.cardTypes);
 
 storage.get("/customersByCountry", onlyAdmin, storageController.customersByCountry);
 
+storage.get("/generalInformation", onlyAdmin, storageController.generalInformation);
+
 module.exports = storage ;

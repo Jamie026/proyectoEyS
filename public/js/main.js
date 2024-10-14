@@ -1,3 +1,5 @@
+const Utils = ChartUtils.init();
+
 const legendMargin = {
     id: "legendMargin",
     afterInit(chart, args, plugins) {
@@ -11,6 +13,19 @@ const legendMargin = {
     }
 }
 
+async function getGeneralInformation(container) {
+    const generalInformation = await axios.get("http://localhost:3000/storage/generalInformation");
+    const complains = generalInformation.data.data["complain"][0];
+    const creditCard = generalInformation.data.data["creditCard"][0];
+    const notCreditCard = generalInformation.data.data["notCreditCard"][0];
+    const total = generalInformation.data.data["total"][0];
+
+    document.getElementById("total").textContent = total[0].Total;
+    document.getElementById("complains").textContent = complains[0].Complain;
+    document.getElementById("cards").textContent = creditCard[0].Card;
+    document.getElementById("notCards").textContent = notCreditCard[0].notCard;
+}
+
 async function getCustomersByCountry(container) {
 
     const customersByCountry = await axios.get("http://localhost:3000/storage/customersByCountry");
@@ -19,9 +34,6 @@ async function getCustomersByCountry(container) {
 
     const cantidadescustomersActive = customersActive.map(customer => customer.Cantidad);
     const cantidadescustomersInactive = customersInactive.map(customer => customer.Cantidad);
-
-    console.log(cantidadescustomersActive, cantidadescustomersInactive);
-    
 
     container.height = 400;
 
@@ -32,15 +44,15 @@ async function getCustomersByCountry(container) {
             datasets: [{
                 label: "Clientes activos",
                 data: cantidadescustomersActive,
-                backgroundColor: "#FFCC99", 
-                borderColor: "#FFB266",
+                borderColor: Utils.CHART_COLORS.blue,
+                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
                 borderWidth: 1
             },
             {
                 label: "Clientes inactivos",
                 data: cantidadescustomersInactive,
-                backgroundColor: "#FFDAB9",
-                borderColor: "#FFCBA4",
+                borderColor: Utils.CHART_COLORS.red,
+                backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
                 borderWidth: 1
             }]
         },
@@ -88,7 +100,8 @@ async function getCardTypes(container) {
             labels: tipos,
             datasets: [{
                 data: cantidades,
-                hoverOffset: 4
+                hoverOffset: 4,
+                backgroundColor: Object.values(Utils.CHART_COLORS),
             }]
         },
         options: {
@@ -174,7 +187,7 @@ async function dashboard() {
 
     await getCardTypes(document.getElementById("doughnut"));
     await getCustomersByCountry(document.getElementById("bar"));
-
+    await getGeneralInformation(document.getElementById("container-mini-cards"));
 }
 
 window.onload = () => {

@@ -27,7 +27,14 @@ async function customersByCountry(request, response) {
         if (results[0].length === 0 && results[1].length === 0) 
             return response.status(200).json({ status: 200, data: null, message: "No hay datos disponibles." });
         else
-            return response.status(200).json({ status: 200, data: { Activo: results[0], Inactivo: results[1] }, message: "Ok." });
+            return response.status(200).json({ 
+                status: 200, 
+                data: { 
+                    Activo: results[0], 
+                    Inactivo: results[1] 
+                }, 
+                message: "Ok." 
+            });
 
 
     } catch (error) {
@@ -36,4 +43,35 @@ async function customersByCountry(request, response) {
     }
 }
 
-module.exports = { cardTypes, customersByCountry };
+async function generalInformation(request, response) {
+    const selectSql_total = "SELECT COUNT(*) as 'Total' FROM customers";
+    const selectSql_credit_card = "SELECT COUNT(*) as 'Card' FROM customers where HasCrCard = 1";
+    const selectSql_not_credit_card = "SELECT COUNT(*) as 'notCard' FROM customers where HasCrCard = 0";
+    const selectSql_complain = "SELECT COUNT(*) as 'Complain' FROM customers WHERE Complain = 1;"
+
+    try {
+        const totalQuery = pool.query(selectSql_total);
+        const creditCardQuery = pool.query(selectSql_credit_card);
+        const notCreditCardQuery = pool.query(selectSql_not_credit_card);
+        const complainQuery = pool.query(selectSql_complain);
+
+        const results = await Promise.all([totalQuery, creditCardQuery, notCreditCardQuery, complainQuery]);
+        return response.status(200).json({ 
+            status: 200,  
+            data: {
+                total: results[0],
+                creditCard: results[1],
+                notCreditCard: results[2],
+                complain: results[3],
+            },
+            message: "Ok."
+        });
+
+    }
+    catch (error) {
+        console.error("Error ejecutando las consultas:", error);
+        response.status(500).json({ error: "Error ejecutando las consultas." });
+    }
+}
+
+module.exports = { cardTypes, customersByCountry, generalInformation };
