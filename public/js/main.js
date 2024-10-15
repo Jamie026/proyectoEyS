@@ -1,3 +1,14 @@
+async function customers() {
+    const accordion = document.getElementsByClassName("accordion");
+    for (let index = 0; index < accordion.length; index++) {
+        accordion[index].addEventListener("click", function() {
+            this.classList.toggle("active");
+            let panel = this.nextElementSibling;
+            panel.style.maxHeight = panel.style.maxHeight ? null : (panel.scrollHeight + "px");
+        });
+    }
+}
+
 const Utils = ChartUtils.init();
 
 const legendMargin = {
@@ -201,4 +212,5 @@ async function dashboard() {
 window.onload = () => {
     if (document.getElementById("register")) registrarUsuario();
     if (document.getElementById("dashboard")) dashboard(); 
+    if (document.getElementById("customers")) customers();
 };
