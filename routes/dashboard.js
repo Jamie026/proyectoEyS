@@ -7,6 +7,8 @@ dashboard.get("/", onlyAdmin, dashboardController.homePage);
 
 dashboard.get("/customers", onlyAdmin, dashboardController.customers)
 
+dashboard.post("/customers", onlyAdmin, dashboardController.customersFilter);
+
 dashboard.get("/logout", onlyAdmin, dashboardController.logout);
 
 module.exports = dashboard ;

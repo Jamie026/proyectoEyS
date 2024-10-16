@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const ms = require("ms");
 const path = require("path");
 const handlebars = require("express-handlebars");
 const session = require("express-session");
@@ -14,14 +15,18 @@ app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false, 
     saveUninitialized: true, 
-    cookie: { secure: false } 
+    cookie: { 
+        secure: false,
+        maxAge:  ms(process.env.SESSION_EXPIRATION)
+    } 
 }));
 
 app.engine("hbs", handlebars.engine({
     defaultLayout: "index",
     layoutsDir: __dirname + "/views/layouts", 
     extname: "hbs",
-    partialsDir: __dirname + "/views/partials/" 
+    partialsDir: __dirname + "/views/partials/",
+    helpers: require("./config/handlebars-helpers")
 }));
 
 app.use(express.static(path.join(__dirname, "public")));

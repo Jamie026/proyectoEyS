@@ -3,7 +3,7 @@ CREATE TABLE customers (
     Surname VARCHAR(100) NOT NULL,
     CreditScore INT NOT NULL,
     Geography VARCHAR(100) NOT NULL,
-    Gender VARCHAR(100) NOT NULL,
+    Gender VARCHAR(20) NOT NULL,
     Age INT NOT NULL,
     Tenure INT NOT NULL,
     NumOfProducts INT NOT NULL,
@@ -68,7 +68,9 @@ SELECT CAST(AES_DECRYPT(salary_aes, YOUR_PRIVATE_KEY) AS CHAR) FROM customers;
 
 DELIMITER $$
 
-CREATE FUNCTION decrypt_customer_data(bdKey VARCHAR(100))
+DELIMITER $$
+
+CREATE FUNCTION decrypt_customer_data(bdKey VARCHAR(100), input_surname VARCHAR(255))
 RETURNS LONGTEXT
 DETERMINISTIC
 READS SQL DATA
@@ -83,17 +85,18 @@ BEGIN
             'PointEarned', `Point Earned`,
             'CreditScore', CreditScore,
             'Geography', Geography,
+            'Gender', Gender,
             'customerId', CAST(AES_DECRYPT(customerId_aes, bdKey) AS CHAR),
-            'creditCard', CAST(AES_DECRYPT(creditCard_aes, bdKey) AS CHAR),
+            'creditCard', IF(CAST(AES_DECRYPT(creditCard_aes, bdKey) AS CHAR) = '', 'No disponible', CAST(AES_DECRYPT(creditCard_aes, bdKey) AS CHAR)),
             'email', CAST(AES_DECRYPT(email_aes, bdKey) AS CHAR),
-            'salary', CAST(AES_DECRYPT(salary_aes, bdKey) AS CHAR),
-            'balance', CAST(AES_DECRYPT(balance_aes, bdKey) AS CHAR)
+            'salary', CONCAT('$', CAST(AES_DECRYPT(salary_aes, bdKey) AS CHAR)),
+            'balance', CONCAT('$', CAST(AES_DECRYPT(balance_aes, bdKey) AS CHAR))
         )
     ) 
     INTO result FROM (
-        SELECT Surname, Age, IsActiveMember, `Point Earned`, CreditScore, Geography, customerId_aes, creditCard_aes, email_aes, salary_aes, balance_aes
+        SELECT Surname, Age, IsActiveMember, `Point Earned`, CreditScore, Geography, Gender, customerId_aes, creditCard_aes, email_aes, salary_aes, balance_aes
         FROM customers
-        LIMIT 10
+        WHERE Surname LIKE CONCAT('%', input_surname, '%')
     ) 
     AS limited_customers;
 
@@ -102,11 +105,11 @@ END$$
 
 DELIMITER ;
 
-SELECT decrypt_customer_data(YOUR_PRIVATE_KEY) AS result;
+SELECT decrypt_customer_data(YOUR_PRIVATE_KEY, INPUT) AS result;
 
 DELIMITER $$
 
-CREATE FUNCTION estandar_customer_data()
+CREATE FUNCTION estandar_customer_data(input_surname VARCHAR(255))
 RETURNS LONGTEXT
 DETERMINISTIC
 READS SQL DATA
@@ -121,17 +124,18 @@ BEGIN
             'PointEarned', `Point Earned`,
             'CreditScore', CreditScore,
             'Geography', Geography,
-            'customerId', '*********',
-            'creditCard', '*********',
-            'email', '*********',
-            'salary', '*********',
-            'balance', '*********'
+            'Gender', Gender,
+            'customerId', 'Sin permiso',
+            'creditCard', 'Sin permiso',
+            'email', 'Sin permiso',
+            'salary', 'Sin permiso',
+            'balance', 'Sin permiso'
         )
     ) 
     INTO result FROM (
-        SELECT Surname, Age, IsActiveMember, `Point Earned`, CreditScore, Geography
+        SELECT Surname, Age, IsActiveMember, `Point Earned`, CreditScore, Geography, Gender
         FROM customers
-        LIMIT 10
+        WHERE Surname LIKE CONCAT('%', input_surname, '%')
     ) 
     AS limited_customers;
 
@@ -140,7 +144,7 @@ END$$
 
 DELIMITER ;
 
-SELECT estandar_customer_data() AS result;
+SELECT estandar_customer_data(INPUT) AS result;
 
 /*
 

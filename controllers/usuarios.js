@@ -1,4 +1,5 @@
 const pool = require("./../config/db");
+const ms = require("ms");
 const { encrypt, compare, generateToken } = require("./../config/authentication");
 const { validationRegister } = require("./../config/validation");
 const jsonwebtoken = require("jsonwebtoken");
@@ -72,7 +73,7 @@ function authenticationUsuario(request, response) {
         );
 
         const cookieOptions = {
-            expires: new Date(Date.now() + process.env.TOKEN_COOKIE_EXPIRATION * 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() + ms(process.env.TOKEN_EXPIRATION)),
             path: "/"
         };
         response.cookie("tokenKey", token, cookieOptions)

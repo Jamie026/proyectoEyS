@@ -6,20 +6,21 @@ function homePage(request, response) {
 }
 
 async function customers(request, response) {
-    const error = request.query.error || null;
-    const bdKey = request.session.bdKey;
+    return response.render("customers");
+}
 
-    let selectSql = "SELECT ";
-    selectSql = selectSql + (!bdKey ? "estandar_customer_data() AS result" : "decrypt_customer_data(?) AS result");
+async function customersFilter(request, response) {
+    const { surname, clave } = request.body;
+    const selectSql = clave ? "SELECT decrypt_customer_data(?, ?) AS result" : "SELECT estandar_customer_data(?) AS result";    
     try {
-        const results = await pool.query(selectSql, bdKey ? [bdKey] : []);
+        const results = await pool.query(selectSql, clave ? [clave, surname] : [surname]);
         const data = JSON.parse(results[0][0].result)        
-        return response.render("customers", { error, data });
+        return response.render("customers", { data });
     } catch (error) {
+        console.error("Error al filtrar los clientes: ", error.stack);
         return response.render("customers", { error: "Ha ocurrido un error al cargar los datos de los clientes." });
     }
 }
-
 
 function logout(request, response) {
     request.session.destroy((error) => {
@@ -38,5 +39,6 @@ function logout(request, response) {
 module.exports = { 
     homePage,
     customers,
+    customersFilter,
     logout
 };
