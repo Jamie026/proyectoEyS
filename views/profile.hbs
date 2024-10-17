@@ -1,0 +1,67 @@
+<main>
+    {{> navbar_logged}}
+
+    <section class="container mt-4">
+        <div class="row">
+            <!-- Perfil del trabajador -->
+            <div class="col-4 mx-auto">
+                <div class="container-card">
+                    <div class="row">
+                        <div class="col-12">
+                            <img class="d-block mx-auto profile-photo rounded-circle border border-dark mt-4 mb-3" src="/img/boy.png" alt="Icono cliente">
+                        </div>
+                        <div class="col-12">
+                            <h2 class="container-subtitle container-card-color text-uppercase mt-2 mb-3 text-center">
+                                {{this.workerData.nombre}} {{this.workerData.apellido}}
+                            </h2>
+                        </div>
+                        <div class="col-12">
+                            <p class="container-mini-text text-center">
+                                {{#if (equal this.workerData.administrador "1")}}
+                                    Tiene permisos de administrador
+                                {{else}}
+                                    No tiene permisos de administrador
+                                {{/if}}
+                            </p>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-secondary w-100 my-2">Ocultar mi usuario de otros trabajadores</button>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-danger w-100 my-2">Eliminar permanentemente mi cuenta</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Formulario de datos del usuario -->
+            <div class="col-6 mx-auto">
+                <form class="container-card" action="/register" method="POST" id="register">
+                    <h2 class="container-subtitle text-center text-uppercase my-3">Datos registrados del usuario</h2>
+                    <div class="input-group my-3">
+                        <input type="text" class="form-control" value="{{this.workerData.nombre}}" placeholder="Nombre" name="nombre" aria-label="Nombre">
+                    </div>
+                    <div class="input-group my-3">
+                        <input type="text" class="form-control" value="{{this.workerData.apellido}}" placeholder="Apellido" name="apellido" aria-label="Apellido">
+                    </div>
+                    <div class="input-group my-3">
+                        <input type="email" class="form-control" value="{{this.workerData.email}}" placeholder="Correo electrónico" name="email" aria-label="Correo electrónico">
+                    </div>
+                    <div id="inputHelp" class="form-text text-center">El usuario y la clave deben tener al menos 8 caracteres y solo pueden contener letras y números.</div>
+                    <div class="input-group my-3">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" class="form-control" value="{{this.workerData.usuario}}" placeholder="Username" name="usuario" aria-label="Username">
+                    </div>
+                    <div class="input-group my-3">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" value="*********" placeholder="Password" name="clave" aria-label="Password">
+                    </div>
+                    <input type="submit" class="btn btn-primary w-100" value="Actualizar datos">
+                </form>
+            </div>
+        </div>
+    </section>
+</main>

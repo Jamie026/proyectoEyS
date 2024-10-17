@@ -1,3 +1,4 @@
+const { checkCookie } = require("../config/authentication");
 const pool = require("./../config/db");
 
 function homePage(request, response) {
@@ -22,6 +23,11 @@ async function customersFilter(request, response) {
     }
 }
 
+async function profile(request, response) {
+    const workerData = await checkCookie(request);
+    return response.render("profile", { workerData, error: workerData ? null : "Error al cargar los datos del trabajador" });
+}
+
 function logout(request, response) {
     request.session.destroy((error) => {
         if (error) 
@@ -40,5 +46,6 @@ module.exports = {
     homePage,
     customers,
     customersFilter,
+    profile,
     logout
 };

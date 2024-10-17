@@ -6,6 +6,7 @@ async function cardTypes(request, response) {
         const results = await pool.query(selectSql);
         return response.status(200).json({ status: 200, data: results[0], message: "Ok." });
     } catch (error) {
+        console.error("Error ejecutando las consultas:", error);
         return response.status(400).json({ status: 400, message: "Error al conectar con la BD." });
     }
 }
@@ -27,7 +28,7 @@ async function customersByCountry(request, response) {
         });
     } catch (error) {
         console.error("Error ejecutando las consultas:", error);
-        response.status(500).json({ error: "Error ejecutando las consultas." });
+        response.status(500).json({ error: "Error al conectar con la BD" });
     }
 }
 
@@ -56,7 +57,7 @@ async function generalInformation(request, response) {
     }
     catch (error) {
         console.error("Error ejecutando las consultas:", error);
-        response.status(500).json({ error: "Error ejecutando las consultas." });
+        response.status(500).json({ error: "Error al conectar con la BD" });
     }
 }
 

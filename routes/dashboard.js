@@ -9,6 +9,8 @@ dashboard.get("/customers", onlyAdmin, dashboardController.customers)
 
 dashboard.post("/customers", onlyAdmin, dashboardController.customersFilter);
 
+dashboard.get("/profile", onlyAdmin, dashboardController.profile);
+
 dashboard.get("/logout", onlyAdmin, dashboardController.logout);
 
 module.exports = dashboard ;

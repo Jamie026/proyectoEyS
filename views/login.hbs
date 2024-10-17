@@ -1,13 +1,13 @@
 <main>
     {{> navbar}}
-
     {{> error_message}}
 
     <section class="container">
         <div class="row">
-            <article class="col-6 mx-auto">
-                <form class="container-card container-center" action="/login" method="POST" id="login">
-                    <h2 class="container-subtitle text-center text-uppercase my-3">Ingrese los datos solicitados</h2>
+            <!-- Formulario de Inicio de Sesión -->
+            <div class="col-6 mx-auto">
+                <form class="container-card text-center mt-5" action="/login" method="POST" id="login">
+                    <h2 class="container-subtitle text-uppercase my-3">Ingrese los datos solicitados</h2>
                     <div class="input-group my-3">
                         <span class="input-group-text">
                             <i class="fa-solid fa-user"></i>
@@ -20,10 +20,9 @@
                         </span>
                         <input type="password" class="form-control" placeholder="Password" name="clave" aria-label="Password">
                     </div>
-                    <input type="submit" class="btn btn-secondary w-100" value="Aceptar">
+                    <input type="submit" class="btn btn-primary w-100" value="Aceptar">
                 </form>
-            </article>
+            </div>
         </div>
     </section>
-
 </main>

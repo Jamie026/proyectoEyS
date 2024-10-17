@@ -1,11 +1,11 @@
 <main>
     {{> navbar_logged}}
-
     {{> error_message}}
 
     <section class="container mt-4" id="customers">
         <div class="row">
-            <article class="col-4">
+            <!-- Filtro de clientes -->
+            <div class="col-4">
                 <form class="container-card container-sticky-item" action="/dashboard/customers" method="POST" id="search">
                     <h2 class="container-subtitle text-center text-uppercase my-3">Filtro de clientes</h2>
                     <div class="input-group my-3">
@@ -20,123 +20,133 @@
                         </span>
                         <input type="password" class="form-control" placeholder="Clave cifrado" name="clave" aria-label="Password">
                     </div>
-                    <input type="submit" class="btn btn-secondary w-100" value="Buscar">
+                    <input type="submit" class="btn btn-primary w-100" value="Buscar">
                 </form>
-            </article>
-            <article class="col-8">
+            </div>
+
+            <!-- Lista de clientes -->
+            <div class="col-8">
                 <section class="row" id="customers-row">
                     {{#each this.data}}
-                    <article class="col-10 mx-auto mb-4">
+                    <div class="col-10 mx-auto mb-4">
                         <button class="container-card container-card-accordion rounded-bottom-0">{{this.Surname}}</button>
                         <div class="panel bg-body-tertiary border border-dark">
                             <div class="container-fluid">
                                 <div class="row d-flex justify-content-center align-items-center">
-                                    <article class="col-3">
+                                    <div class="col-3">
                                         <div class="row">
-                                            <article class="col-12">
+                                            <div class="col-12">
                                                 {{#if (equal this.Gender "Female")}}
                                                     <img class="d-block mx-auto profile-photo rounded-circle border border-dark mt-5 mb-3" src="/img/girl.png" alt="Icono cliente">
                                                 {{else}}
                                                     <img class="d-block mx-auto profile-photo rounded-circle border border-dark mt-4 mb-3" src="/img/boy.png" alt="Icono cliente">
                                                 {{/if}}
-                                            </article>
-                                            <article class="col-12">
+                                            </div>
+                                            <div class="col-12">
                                                 <h2 class="container-mini-text text-center">ID: 
                                                     {{#if this.customerId}}
                                                         {{this.customerId}}
                                                     {{else}}
-                                                       Sin permiso
+                                                        Sin permiso
                                                     {{/if}}
                                                 </h2>
-                                            </article>
+                                            </div>
                                         </div>
-                                    </article>
-                                    <article class="col-9">
+                                    </div>
+
+                                    <div class="col-9">
                                         <div class="container-fluid">
                                             <div class="row">
-                                                <article class="col-12">
+                                                <div class="col-12">
                                                     <h2 class="container-subtitle container-card-color text-uppercase my-4">Información del cliente</h2>
-                                                </article>
-                                                <article class="col-4">
+                                                </div>
+
+                                                <div class="col-4">
                                                     <p class="container-mini-text my-2 text-center">País:</p>
-                                                </article>
-                                                <div class="col-8">
-                                                     <p class="container-mini-text my-2 text-center">{{this.Geography}}</p>
                                                 </div>
-                                                <article class="col-4">
+                                                <div class="col-8">
+                                                    <p class="container-mini-text my-2 text-center">{{this.Geography}}</p>
+                                                </div>
+
+                                                <div class="col-4">
                                                     <p class="container-mini-text my-2 text-center">Edad:</p>
-                                                </article>
-                                                <div class="col-8">
-                                                     <p class="container-mini-text my-2 text-center">{{this.Age}} años</p>
                                                 </div>
+                                                <div class="col-8">
+                                                    <p class="container-mini-text my-2 text-center">{{this.Age}} años</p>
+                                                </div>
+
                                                 <div class="col-4">
                                                     <p class="container-mini-text my-2 text-center">N° Tarjeta:</p>
                                                 </div>
-                                                <article class="col-8">
+                                                <div class="col-8">
                                                     {{#if this.creditCard}}
                                                         <p class="container-mini-text my-2 text-center">{{this.creditCard}}</p>
                                                     {{else}}
-                                                        <p class="container-mini-text my-2 text-center">Sin permiso</p> 
+                                                        <p class="container-mini-text my-2 text-center">Sin permiso</p>
                                                     {{/if}}
-                                                </article>
+                                                </div>
+
                                                 <div class="col-4">
                                                     <p class="container-mini-text my-2 text-center">Correo:</p>
                                                 </div>
-                                                <article class="col-8">
+                                                <div class="col-8">
                                                     {{#if this.email}}
                                                         <p class="container-mini-text my-2 text-center">{{this.email}}</p>
                                                     {{else}}
                                                         <p class="container-mini-text my-2 text-center">Sin permiso</p>
                                                     {{/if}}
-                                                </article>
+                                                </div>
+
                                                 <div class="col-4">
                                                     <p class="container-mini-text my-2 text-center">Saldo:</p>
                                                 </div>
-                                                <article class="col-8">
+                                                <div class="col-8">
                                                     {{#if this.balance}}
                                                         <p class="container-mini-text my-2 text-center">{{this.balance}}</p>
                                                     {{else}}
-                                                        <p class="container-mini-text my-2 text-center">Sin permiso</p> 
+                                                        <p class="container-mini-text my-2 text-center">Sin permiso</p>
                                                     {{/if}}
-                                                </article>
+                                                </div>
+
                                                 <div class="col-4">
                                                     <p class="container-mini-text my-2 text-center">Salario:</p>
                                                 </div>
-                                                <article class="col-8">
+                                                <div class="col-8">
                                                     {{#if this.salary}}
                                                         <p class="container-mini-text my-2 text-center">{{this.salary}}</p>
                                                     {{else}}
-                                                        <p class="container-mini-text my-2 text-center">Sin permiso</p> 
+                                                        <p class="container-mini-text my-2 text-center">Sin permiso</p>
                                                     {{/if}}
-                                                </article>
+                                                </div>
                                             </div>
                                         </div>
-                                    </article>
+                                    </div>
                                 </div>
+
                                 <footer class="row mt-3 border-top border-dark py-2">
-                                    <article class="col-4 text-center">
+                                    <div class="col-4 text-center">
                                         <p class="container-subtitle container-card-color">{{this.PointEarned}}</p>
                                         <p class="container-mini-text">Points earned</p>
-                                    </article>
-                                    <article class="col-4 text-center">
+                                    </div>
+                                    <div class="col-4 text-center">
                                         {{#if (equal this.IsActiveMember "1")}}
                                             <i class="fa-solid fa-check fs-2 text-success mt-1 mb-2"></i>
                                         {{else}}
                                             <i class="fa-solid fa-xmark fs-2 text-danger mt-1 mb-2"></i>
                                         {{/if}}
                                         <p class="container-mini-text">Miembro Activo</p>
-                                    </article>
-                                    <article class="col-4 text-center">
+                                    </div>
+                                    <div class="col-4 text-center">
                                         <p class="container-subtitle container-card-color">{{this.CreditScore}}</p>
                                         <p class="container-mini-text">Credit Score</p>
-                                    </article>
+                                    </div>
                                 </footer>
                             </div>
                         </div>
-                    </article>  
+                    </div>  
                     {{/each}}
                 </section>
-            </article>
+            </div>
         </div>
     </section>
 </main>
