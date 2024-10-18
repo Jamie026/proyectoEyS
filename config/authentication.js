@@ -1,6 +1,7 @@
-const pool = require("./db");
 const ms = require("ms");
+const pool = require("./db");
 const bcrypt = require("bcrypt");
+const aes256 = require("aes256");
 const nodemailer = require("nodemailer");
 const jsonwebtoken = require("jsonwebtoken");
 require("dotenv").config();
@@ -13,13 +14,13 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-function encrypt(password){
+function encryptPassword(password) {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
     return hash;
 }
 
-function compare(password, hashedPassword){
+function comparePassword(password, hashedPassword) {
     return bcrypt.compareSync(password, hashedPassword);
 }
 
@@ -44,12 +45,12 @@ async function sendAuthEmail(email, response) {
         console.error("Error al generar token", error);
         return null;
     }
-};
+}
 
-async function sendConfirmationEmail(email, username, password, deleteAccountLink, privacyPolicyLink, response) {
+async function sendConfirmationEmail(email, username, password, deleteAccountLink, response) {
     try {
         const html = await new Promise((resolve, reject) => {
-            response.render("confirmation", { username, password, deleteAccountLink, privacyPolicyLink }, (err, renderedHtml) => {
+            response.render("confirmation", { username, password, deleteAccountLink }, (err, renderedHtml) => {
                 err ? reject(err) : resolve(renderedHtml);
             });
         });
@@ -61,7 +62,6 @@ async function sendConfirmationEmail(email, username, password, deleteAccountLin
         };
 
         await transporter.sendMail(mailOptions);
-        console.log('Correo de confirmación enviado');
         return true;
     } catch (error) {
         console.error("Error al enviar correo de confirmación: ", error);
@@ -69,31 +69,56 @@ async function sendConfirmationEmail(email, username, password, deleteAccountLin
     }
 }
 
-function createCookie(usuario, response) {
-    const token = jsonwebtoken.sign(
-        { usuario: usuario }, 
+function createToken(data) {
+    return jsonwebtoken.sign(
+        { data: data }, 
         process.env.TOKEN_PRIVATE_KEY,
         { expiresIn: process.env.TOKEN_EXPIRATION } 
     );
+}
 
+function createCookie(usuario, response) {
+    const token = createToken(usuario);
     const cookieOptions = {
-        expires: new Date(Date.now() + ms(process.env.TOKEN_EXPIRATION)),
-        path: "/"
+        expires: new Date(Date.now() + ms(process.env.TOKEN_EXPIRATION)), 
+        path: "/",              
+        httpOnly: true,         
+        secure: true,
+        sameSite: "strict"
     };
-    response.cookie("tokenKey", token, cookieOptions)
+    response.cookie("tokenKey", token, cookieOptions);
 }
 
 async function checkCookie(request) {
-    const cookieJWT = request.headers.cookie.split("; ").find(cookie => cookie.startsWith("tokenKey="))?.slice(9); 
-    if (!cookieJWT) 
-        return false;
     try {
+        const cookieJWT = request.headers.cookie.split("; ").find(cookie => cookie.startsWith("tokenKey="))?.slice(9); 
+        if (!cookieJWT) 
+            return false;
         const decodificada = jsonwebtoken.verify(cookieJWT, process.env.TOKEN_PRIVATE_KEY);
-        const results = await pool.query("SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1", [decodificada.usuario]);
+        const results = await pool.query("SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1", [decodificada.data]);
         return (results[0].length === 0) ? false : results[0][0];
     } catch (error) {
         return false;
     }
 }
 
-module.exports = { encrypt, compare, sendAuthEmail, checkCookie, createCookie, sendConfirmationEmail };
+function aes256Encrypt(data) {
+    const key = process.env.AES_256;
+    return aes256.encrypt(key, data);
+}
+
+function aes256Decrypt(encryptedData) {
+    const key = process.env.AES_256;
+    return aes256.decrypt(key, encryptedData);
+}
+
+module.exports = {
+    encryptPassword,
+    comparePassword,
+    sendAuthEmail,
+    sendConfirmationEmail,
+    createCookie,
+    checkCookie,
+    aes256Encrypt,
+    aes256Decrypt
+};

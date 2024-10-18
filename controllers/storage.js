@@ -44,12 +44,14 @@ async function generalInformation(request, response) {
             },
             message: "Ok."
         });
-
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error ejecutando las consultas: ", error);
         response.status(500).json({ error: "Error al conectar con la BD" });
     }
 }
 
-module.exports = { cardTypes, customersByCountry, generalInformation };
+module.exports = {
+    cardTypes,
+    customersByCountry,
+    generalInformation
+};

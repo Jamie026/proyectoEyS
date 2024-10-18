@@ -1,7 +1,7 @@
 const express = require("express");
 const dashboard = express.Router();
 const dashboardController = require("./../controllers/dashboard");
-const { onlyAdmin } = require("./../config/middlewares");
+const { onlyAdmin, completeValidation } = require("./../config/middlewares");
 
 dashboard.get("/", onlyAdmin, dashboardController.homePage);
 
@@ -13,7 +13,7 @@ dashboard.get("/profile", onlyAdmin, dashboardController.profile);
 
 dashboard.get("/changePrivacity", onlyAdmin, dashboardController.changePrivacity)
 
-dashboard.post("/updateWorker", onlyAdmin, dashboardController.updateworker)
+dashboard.post("/updateWorker", onlyAdmin, completeValidation, dashboardController.updateworker)
 
 dashboard.get("/deleteWorker", onlyAdmin, dashboardController.deleteWorker)
 

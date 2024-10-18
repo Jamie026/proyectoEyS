@@ -13,7 +13,7 @@ const Utils = ChartUtils.init();
 
 export async function getGeneralInformation() {
     try {
-        const result = await axios.get("http://localhost:3000/storage/generalInformation");
+        const result = await axios.get("https://localhost:3000/storage/generalInformation");
         const generalInfo = result.data.data;
         alertify.warning("Cargando información...");
 
@@ -35,7 +35,7 @@ export async function getGeneralInformation() {
 }
 
 async function getCustomersByCountry(container) {
-    const result = await axios.get("http://localhost:3000/storage/customersByCountry");
+    const result = await axios.get("https://localhost:3000/storage/customersByCountry");
     const customersData = result.data.data
     
     const [active, inactive] = [customersData.Activo[0], customersData.Inactivo[0]];
@@ -65,7 +65,7 @@ async function getCustomersByCountry(container) {
 }
 
 async function getCardTypes(container) {
-    const result = await axios.get("http://localhost:3000/storage/cardTypes");
+    const result = await axios.get("https://localhost:3000/storage/cardTypes");
     const cardData = result.data.data;    
     const quantities = cardData.map(card => card.Cantidad);
     const types = cardData.map(card => card["cardType"]);

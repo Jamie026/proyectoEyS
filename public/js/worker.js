@@ -19,7 +19,7 @@ function downloadData() {
 
 async function chanceVisibily() {
     try {
-        const result = await axios.get("http://localhost:3000/dashboard/changePrivacity");
+        const result = await axios.get("https://localhost:3000/dashboard/changePrivacity");
         document.getElementById("visible").textContent = result.data.textContent;
         alertify.success("Se ha modificado la visibilidad de su usuario.");
     } catch (error) {
@@ -33,7 +33,7 @@ async function deleteWorker() {
     try {
         alertify.confirm("Confirmación de eliminación", "¿Seguro que quiere eliminar su cuenta?", async () => {
             alertify.warning("Eliminando cuenta...");
-            await axios.get("http://localhost:3000/dashboard/deleteWorker");
+            await axios.get("https://localhost:3000/dashboard/deleteWorker");
             window.location.reload();
         }, () => alertify.error("Eliminación cancelada."));
     } catch (error) {
