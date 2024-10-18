@@ -1,9 +1,17 @@
 const pool = require("./db");
 const ms = require("ms");
 const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 const jsonwebtoken = require("jsonwebtoken");
-require('dotenv').config();
+require("dotenv").config();
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_SENDER,
+        pass: process.env.EMAIL_SENDER_PASSWORD
+    }
+});
 
 function encrypt(password){
     const salt = bcrypt.genSaltSync(10);
@@ -15,32 +23,51 @@ function compare(password, hashedPassword){
     return bcrypt.compareSync(password, hashedPassword);
 }
 
-function sendAuthEmail(email) {
+async function sendAuthEmail(email, response) {
     try {
         const token = Math.floor(1000 + Math.random() * 9000);
-
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_SENDER,
-                pass: process.env.EMAIL_SENDER_PASSWORD
-            }
-        })
-
+        const html = await new Promise((resolve, reject) => {
+            response.render("codeMFA", { token }, (err, renderedHtml) => {
+                err ? reject(err) : resolve(renderedHtml);
+            });
+        });
         const mailOptions = {
-            from: process.env.EMAIL_SENDER,
+            from: "Proyecto Ética y Seguridad",
             to: email,
-            subject: "Autenticación de usuario",
-            text: `Tu código de verificación es: ${token}`
+            subject: "Código de verificación para tu cuenta",
+            html
         };
 
-        transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
         return token;
     } catch (error) {
         console.error("Error al generar token", error);
         return null;
     }
 };
+
+async function sendConfirmationEmail(email, username, password, deleteAccountLink, privacyPolicyLink, response) {
+    try {
+        const html = await new Promise((resolve, reject) => {
+            response.render("confirmation", { username, password, deleteAccountLink, privacyPolicyLink }, (err, renderedHtml) => {
+                err ? reject(err) : resolve(renderedHtml);
+            });
+        });
+        const mailOptions = {
+            from: "Proyecto de Ética y Seguridad",
+            to: email,
+            subject: "Notificación sobre el uso de tus datos y acceso a la plataforma",
+            html
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log('Correo de confirmación enviado');
+        return true;
+    } catch (error) {
+        console.error("Error al enviar correo de confirmación: ", error);
+        return false;
+    }
+}
 
 function createCookie(usuario, response) {
     const token = jsonwebtoken.sign(
@@ -69,4 +96,4 @@ async function checkCookie(request) {
     }
 }
 
-module.exports = { encrypt, compare, sendAuthEmail, checkCookie, createCookie };
+module.exports = { encrypt, compare, sendAuthEmail, checkCookie, createCookie, sendConfirmationEmail };

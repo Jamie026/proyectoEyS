@@ -79,7 +79,7 @@ async function updateworker(request, response) {
             [usuario, encriptada, email, nombre, apellido, workerData.usuario]);
         if (results.affectedRows > 0){
             createCookie(usuario, response);
-            return response.status(200).json({ message: "Ok", nombre: nombre, apellido: apellido });
+            return response.status(200).json({ message: "Ok" });
         }
         else
             return response.status(404).json({ message: "Usuario no encontrado." });

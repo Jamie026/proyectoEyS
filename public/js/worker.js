@@ -1,12 +1,19 @@
 export function profileActions() {
     const actions = {
-        "delete-worker": () => { alertify.confirm("Confirmación de eliminación", "¿Seguro que quiere eliminar su cuenta?", deleteWorker, () => alertify.error("Eliminación cancelada.")) },
-        "visible": chanceVisibily
+        "delete-worker": deleteWorker,
+        "visible": chanceVisibily,
+        "downloadData": downloadData,
     };
 
     Object.keys(actions).forEach(elementId => {
         const element = document.getElementById(elementId);
         if (element) element.addEventListener("click", actions[elementId]);
+    });
+}
+
+function downloadData() {
+    TableToExcel.convert(document.getElementById("myData"), {
+        name: "DatosPersonales.xlsx"
     });
 }
 
@@ -24,13 +31,15 @@ async function chanceVisibily() {
 
 async function deleteWorker() {
     try {
-        alertify.warning("Eliminando cuenta...");
-        await axios.get("http://localhost:3000/dashboard/deleteWorker");
-        window.location.reload();
+        alertify.confirm("Confirmación de eliminación", "¿Seguro que quiere eliminar su cuenta?", async () => {
+            alertify.warning("Eliminando cuenta...");
+            await axios.get("http://localhost:3000/dashboard/deleteWorker");
+            window.location.reload();
+        }, () => alertify.error("Eliminación cancelada."));
     } catch (error) {
         console.error("Error al eliminar cuenta: ", error);
         const errorMessage = error.response.data.message;    
-        alertify.notify(errorMessage, "error", 5)  
+        alertify.notify(errorMessage, "error", 5);
     }
 }
 

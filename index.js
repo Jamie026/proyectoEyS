@@ -10,6 +10,7 @@ require('dotenv').config();
 const port = 3000;
 
 app.set("view engine", "hbs");
+app.set('views', [__dirname + "/views", __dirname + "/views/emails"]);
 
 app.use(session({
     secret: process.env.SESSION_KEY,
@@ -45,4 +46,4 @@ app.use("/", router);
 app.use("/dashboard", dashboard);
 app.use("/storage", storage);
 
-app.listen(port, () => console.log(`App listening to port ${port}`));
+app.listen(port, () => console.log("Service listening on port " + port));

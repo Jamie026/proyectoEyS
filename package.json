@@ -1,5 +1,6 @@
 {
   "name": "eys",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "Proyecto EyS",
   "main": "index.js",

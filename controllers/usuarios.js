@@ -1,5 +1,5 @@
 const pool = require("./../config/db");
-const { encrypt, compare, sendAuthEmail, createCookie } = require("./../config/authentication");
+const { encrypt, compare, sendAuthEmail, sendConfirmationEmail, createCookie } = require("./../config/authentication");
 const { validationComplete, validationLogin } = require("./../config/validation");
 
 function homePage(request, response) {
@@ -24,6 +24,9 @@ async function registerUsuarioPOST(request, response) {
     try {
         await pool.query("INSERT INTO usuarios (nombre, apellido, email, usuario, clave) VALUES (?, ?, ?, ?, ?)", 
             [nombre, apellido, email, usuario, encriptada]);
+        const confirmationEmail = await sendConfirmationEmail(email, usuario, clave, "https://enlace.eliminar.cuenta", "https://enlace.politica.privacidad", response);
+        if (!confirmationEmail)
+            return response.status(500).json({ message: [{ message: "Se registro al usuario, pero hubo error al enviar correo de confirmación." }] });
         return response.status(201).json({ message: "Ok." });
     } catch (error) {        
         let errorMessage = "Error al registrar al usuario.";        
@@ -47,7 +50,9 @@ async function loginUsuarioPOST(request, response) {
         const userData = results[0][0];
         if (!compare(clave, userData.clave)) 
             return response.redirect("/login?error=Contraseña incorrecta.");
-        request.session.token = sendAuthEmail(userData.email);
+        request.session.token = await sendAuthEmail(userData.email, response);
+        if (!request.session.token)
+            return response.redirect("/login?error=Error al enviar correo de autenticación.");
         request.session.userData = userData;
         return response.render("check");
     } catch (error) {

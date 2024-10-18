@@ -1,8 +1,7 @@
 export function registrarUsuario() {        
-    sendForm((result) => {
-        alertify.success("Usuario registrado correctamente");
-    }, (error) => {
-        console.error("Error al enviar el formulario: ", error);
+    sendForm((result) => alertify.success("Usuario registrado correctamente"), 
+    (error) => {
+        console.error("Error al enviar el formulario: ", error);    
         const result = error.response.data;            
         const messages = Object.values(result.message).map(error => error.message);            
         messages.forEach(msg => alertify.notify(msg, "error", 5));
@@ -10,11 +9,8 @@ export function registrarUsuario() {
 }
 
 export function updateUsuario() {
-    sendForm((result) => {
-        alertify.success("Datos actualizados extisosamente");
-        document.getElementById("usuario").textContent = result.data.nombre + " " + result.data.apellido
-        
-    }, (error) => {
+    sendForm((result) => window.location.reload(), 
+    (error) => {
         console.error("Error al enviar el formulario: ", error);
         const result = error.response.data;            
         const messages = Object.values(result.message).map(error => error.message);            
@@ -27,6 +23,7 @@ function sendForm(successCallback, errorCallback, element) {
         e.preventDefault();
         const formData = Object.fromEntries(new FormData(e.target).entries());
         try {
+            alertify.warning("Enviando formulario...");
             const result = await axios.post(e.target.action, formData);  
             successCallback(result);          
         } catch (error) {
