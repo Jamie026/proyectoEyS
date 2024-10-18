@@ -6,6 +6,8 @@ require('dotenv').config();
 
 router.get("/", onlyPublic, userController.homePage);
 
+router.get("/politicy", userController.politicy);
+
 router.get("/login", onlyPublic, userController.loginGET);
 
 router.get("/register", onlyPublic, userController.registerGET);

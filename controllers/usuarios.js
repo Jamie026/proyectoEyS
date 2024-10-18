@@ -6,6 +6,10 @@ function homePage(request, response) {
     return response.render("main");
 }
 
+function politicy(request, response) {
+    return response.render("politicy");
+}
+
 function loginGET(request, response) {
     const error = request.query.error || null; 
     return response.render("login", { error }); 
@@ -24,7 +28,7 @@ async function registerUsuarioPOST(request, response) {
     try {
         await pool.query("INSERT INTO usuarios (nombre, apellido, email, usuario, clave) VALUES (?, ?, ?, ?, ?)", 
             [nombre, apellido, email, usuario, encriptada]);
-        const confirmationEmail = await sendConfirmationEmail(email, usuario, clave, "https://enlace.eliminar.cuenta", "https://enlace.politica.privacidad", response);
+        const confirmationEmail = await sendConfirmationEmail(email, usuario, clave, "https://enlace.eliminar.cuenta", "http://localhost:3000/politicy", response);
         if (!confirmationEmail)
             return response.status(500).json({ message: [{ message: "Se registro al usuario, pero hubo error al enviar correo de confirmación." }] });
         return response.status(201).json({ message: "Ok." });
@@ -74,6 +78,7 @@ function authenticationUsuario(request, response) {
 
 module.exports = { 
     homePage, 
+    politicy,
     registerGET, 
     loginGET, 
     registerUsuarioPOST, 
