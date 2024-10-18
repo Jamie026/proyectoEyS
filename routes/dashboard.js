@@ -11,6 +11,12 @@ dashboard.post("/customers", onlyAdmin, dashboardController.customersFilter);
 
 dashboard.get("/profile", onlyAdmin, dashboardController.profile);
 
+dashboard.get("/changePrivacity", onlyAdmin, dashboardController.changePrivacity)
+
+dashboard.post("/updateWorker", onlyAdmin, dashboardController.updateworker)
+
+dashboard.get("/deleteWorker", onlyAdmin, dashboardController.deleteWorker)
+
 dashboard.get("/logout", onlyAdmin, dashboardController.logout);
 
 module.exports = dashboard ;

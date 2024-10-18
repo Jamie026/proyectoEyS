@@ -9,12 +9,14 @@ niv.extendMessages({
     regex: "El formato del campo :attribute no es válido.",
     alpha: "El campo :attribute solo puede contener letras y espacios.",
     length: "El campo :attribute debe tener mínimo 8 caracteres y máximo 20",
-    email: "El campo :attribute debe tener formato de correo electrónico"
+    email: "El campo :attribute debe tener formato de correo electrónico",
+    alphaNumeric: "El campo :attribute solo puede contener letras y números."
 }, "es");
 
 niv.extend("alpha", ({ value }) => /^[A-Za-zñÑ\s]+$/.test(value), "El campo :attribute solo puede contener letras y espacios.");
+niv.extend("alphaNumeric", ({ value }) => /^[A-Za-z0-9*]+$/.test(value), "El campo :attribute solo puede contener letras, números y asteriscos.");
 
-async function validationRegister(data) {
+async function validationComplete(data) {
     const register = new Validator(data, {
         nombre: "required|alpha",
         apellido: "required|alpha",
@@ -37,4 +39,4 @@ async function validationLogin(data) {
     return matched ? null : login.errors;
 }
 
-module.exports = { validationRegister, validationLogin };
+module.exports = { validationComplete, validationLogin };

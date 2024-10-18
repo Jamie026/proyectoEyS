@@ -1,4 +1,5 @@
 const pool = require("./db");
+const ms = require("ms");
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer');
 const jsonwebtoken = require("jsonwebtoken");
@@ -14,7 +15,7 @@ function compare(password, hashedPassword){
     return bcrypt.compareSync(password, hashedPassword);
 }
 
-function generateToken(email) {
+function sendAuthEmail(email) {
     try {
         const token = Math.floor(1000 + Math.random() * 9000);
 
@@ -41,18 +42,31 @@ function generateToken(email) {
     }
 };
 
+function createCookie(usuario, response) {
+    const token = jsonwebtoken.sign(
+        { usuario: usuario }, 
+        process.env.TOKEN_PRIVATE_KEY,
+        { expiresIn: process.env.TOKEN_EXPIRATION } 
+    );
+
+    const cookieOptions = {
+        expires: new Date(Date.now() + ms(process.env.TOKEN_EXPIRATION)),
+        path: "/"
+    };
+    response.cookie("tokenKey", token, cookieOptions)
+}
+
 async function checkCookie(request) {
     const cookieJWT = request.headers.cookie.split("; ").find(cookie => cookie.startsWith("tokenKey="))?.slice(9); 
     if (!cookieJWT) 
         return false;
     try {
         const decodificada = jsonwebtoken.verify(cookieJWT, process.env.TOKEN_PRIVATE_KEY);
-        const selectSql = "SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1";
-        const results = await pool.query(selectSql, [decodificada.user]);
+        const results = await pool.query("SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1", [decodificada.usuario]);
         return (results[0].length === 0) ? false : results[0][0];
     } catch (error) {
         return false;
     }
 }
 
-module.exports = { encrypt, compare, generateToken, checkCookie };
+module.exports = { encrypt, compare, sendAuthEmail, checkCookie, createCookie };

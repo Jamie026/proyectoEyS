@@ -11,3 +11,6 @@ CREATE TABLE usuarios (
     UNIQUE KEY USUARIO_UNICO (usuario),
     UNIQUE KEY EMAIL_UNICO (email)
 );
+
+ALTER TABLE usuarios
+ADD COLUMN usuarioVisible INT DEFAULT 1 CHECK (usuarioVisible IN (0, 1));

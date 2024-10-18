@@ -1,17 +1,17 @@
 <main>
     {{> navbar_logged}}
 
-    <section class="container mt-4">
+    <section class="container mt-4" id="worker">
         <div class="row">
             <!-- Perfil del trabajador -->
-            <div class="col-4 mx-auto">
+            <div class="col-5 mx-auto">
                 <div class="container-card">
                     <div class="row">
                         <div class="col-12">
                             <img class="d-block mx-auto profile-photo rounded-circle border border-dark mt-4 mb-3" src="/img/boy.png" alt="Icono cliente">
                         </div>
                         <div class="col-12">
-                            <h2 class="container-subtitle container-card-color text-uppercase mt-2 mb-3 text-center">
+                            <h2 class="container-subtitle container-card-color text-uppercase mt-2 mb-3 text-center" id="usuario">
                                 {{this.workerData.nombre}} {{this.workerData.apellido}}
                             </h2>
                         </div>
@@ -25,17 +25,21 @@
                             </p>
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-secondary w-100 my-2">Ocultar mi usuario de otros trabajadores</button>
+                            {{#if (equal this.workerData.usuarioVisible "1")}}
+                                <button class="btn btn-secondary w-100 my-2" id="visible">Ocultar mi usuario de otros trabajadores</button>
+                            {{else}}
+                                <button class="btn btn-secondary w-100 my-2" id="visible">Mostrar mi usuario a otros trabajadores</button>
+                            {{/if}}
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-danger w-100 my-2">Eliminar permanentemente mi cuenta</button>
+                            <button class="btn btn-danger w-100 my-2" id="delete-worker">Eliminar permanentemente mi cuenta</button>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Formulario de datos del usuario -->
             <div class="col-6 mx-auto">
-                <form class="container-card" action="/register" method="POST" id="register">
+                <form class="container-card" action="/dashboard/updateWorker" method="POST" id="updateWorker">
                     <h2 class="container-subtitle text-center text-uppercase my-3">Datos registrados del usuario</h2>
                     <div class="input-group my-3">
                         <input type="text" class="form-control" value="{{this.workerData.nombre}}" placeholder="Nombre" name="nombre" aria-label="Nombre">

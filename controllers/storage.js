@@ -1,25 +1,21 @@
 const pool = require("./../config/db");
 
 async function cardTypes(request, response) {
-    const selectSql = "SELECT `Card Type`, COUNT(*) as 'Cantidad' FROM customers GROUP BY `Card Type`";
     try {
-        const results = await pool.query(selectSql);
-        return response.status(200).json({ status: 200, data: results[0], message: "Ok." });
+        const results = await pool.query("SELECT cardType, COUNT(*) as 'Cantidad' FROM customers GROUP BY cardType");
+        return response.status(200).json({ data: results[0], message: "Ok." });
     } catch (error) {
-        console.error("Error ejecutando las consultas:", error);
-        return response.status(400).json({ status: 400, message: "Error al conectar con la BD." });
+        console.error("Error ejecutando las consultas: ", error);
+        return response.status(500).json({ message: "Error al conectar con la BD." });
     }
 }
 
 async function customersByCountry(request, response) {
-    const selectSql_actives = "SELECT COUNT(*) as 'Cantidad', Geography FROM customers WHERE IsActiveMember = 1 GROUP BY Geography";
-    const selectSql_inactives = "SELECT COUNT(*) as 'Cantidad', Geography FROM customers WHERE IsActiveMember = 0 GROUP BY Geography";
     try {
-        const activeQuery = pool.query(selectSql_actives);
-        const inactiveQuery = pool.query(selectSql_inactives);
+        const activeQuery = pool.query("SELECT COUNT(*) as 'Cantidad', Geography FROM customers WHERE IsActiveMember = 1 GROUP BY Geography");
+        const inactiveQuery = pool.query("SELECT COUNT(*) as 'Cantidad', Geography FROM customers WHERE IsActiveMember = 0 GROUP BY Geography");
         const results = await Promise.all([activeQuery, inactiveQuery]);
         return response.status(200).json({ 
-            status: 200, 
             data: { 
                 Activo: results[0], 
                 Inactivo: results[1] 
@@ -27,24 +23,19 @@ async function customersByCountry(request, response) {
             message: "Ok." 
         });
     } catch (error) {
-        console.error("Error ejecutando las consultas:", error);
+        console.error("Error ejecutando las consultas: ", error);
         response.status(500).json({ error: "Error al conectar con la BD" });
     }
 }
 
 async function generalInformation(request, response) {
-    const selectSql_total = "SELECT COUNT(*) as 'Total' FROM customers";
-    const selectSql_credit_card = "SELECT COUNT(*) as 'Card' FROM customers where HasCrCard = 1";
-    const selectSql_not_credit_card = "SELECT COUNT(*) as 'notCard' FROM customers where HasCrCard = 0";
-    const selectSql_complain = "SELECT COUNT(*) as 'Complain' FROM customers WHERE Complain = 1;"
     try {
-        const totalQuery = pool.query(selectSql_total);
-        const creditCardQuery = pool.query(selectSql_credit_card);
-        const notCreditCardQuery = pool.query(selectSql_not_credit_card);
-        const complainQuery = pool.query(selectSql_complain);
+        const totalQuery = pool.query("SELECT COUNT(*) as 'Total' FROM customers");
+        const creditCardQuery = pool.query("SELECT COUNT(*) as 'Card' FROM customers where HasCrCard = 1");
+        const notCreditCardQuery = pool.query("SELECT COUNT(*) as 'notCard' FROM customers where HasCrCard = 0");
+        const complainQuery = pool.query("SELECT COUNT(*) as 'Complain' FROM customers WHERE Complain = 1;");
         const results = await Promise.all([totalQuery, creditCardQuery, notCreditCardQuery, complainQuery]);
         return response.status(200).json({ 
-            status: 200,  
             data: {
                 total: results[0],
                 creditCard: results[1],
@@ -56,7 +47,7 @@ async function generalInformation(request, response) {
 
     }
     catch (error) {
-        console.error("Error ejecutando las consultas:", error);
+        console.error("Error ejecutando las consultas: ", error);
         response.status(500).json({ error: "Error al conectar con la BD" });
     }
 }

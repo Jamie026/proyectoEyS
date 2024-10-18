@@ -1,0 +1,46 @@
+export function profileActions() {
+    const actions = {
+        "delete-worker": () => { alertify.confirm("Confirmación de eliminación", "¿Seguro que quiere eliminar su cuenta?", deleteWorker, () => alertify.error("Eliminación cancelada.")) },
+        "visible": chanceVisibily
+    };
+
+    Object.keys(actions).forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element) element.addEventListener("click", actions[elementId]);
+    });
+}
+
+async function chanceVisibily() {
+    try {
+        const result = await axios.get("http://localhost:3000/dashboard/changePrivacity");
+        document.getElementById("visible").textContent = result.data.textContent;
+        alertify.success("Se ha modificado la visibilidad de su usuario.");
+    } catch (error) {
+        console.error("Error al cambiar el estado: ", error);
+        const errorMessage = error.response.data.message;    
+        alertify.notify(errorMessage, "error", 5)            
+    }
+}
+
+async function deleteWorker() {
+    try {
+        alertify.warning("Eliminando cuenta...");
+        await axios.get("http://localhost:3000/dashboard/deleteWorker");
+        window.location.reload();
+    } catch (error) {
+        console.error("Error al eliminar cuenta: ", error);
+        const errorMessage = error.response.data.message;    
+        alertify.notify(errorMessage, "error", 5)  
+    }
+}
+
+export function customersList() {
+    const accordion = document.getElementsByClassName("container-card-accordion");
+    Array.from(accordion).forEach(card => {
+        card.addEventListener("click", function() {
+            this.classList.toggle("container-card-accordion-active");
+            const panel = this.nextElementSibling;
+            panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+        });
+    });
+}

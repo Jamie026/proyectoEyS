@@ -30,6 +30,8 @@ CREATE TABLE customers (
 
 /* Antes de ejecutar el contenido de abajo, hacer los inserts correspondientes para que la encriptación funcione. */
 
+ALTER TABLE customers RENAME COLUMN `Card Type` TO cardType;
+
 UPDATE customers
 SET email_aes = AES_ENCRYPT(Email, YOUR_PRIVATE_KEY);
 
