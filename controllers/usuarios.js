@@ -1,13 +1,5 @@
 const pool = require("./../config/db");
-const { 
-    encryptPassword, 
-    comparePassword, 
-    sendAuthEmail, 
-    sendConfirmationEmail, 
-    createCookie, 
-    aes256Encrypt, 
-    aes256Decrypt 
-} = require("./../config/authentication");
+const { comparePassword, sendAuthEmail, createCookie, aes256Encrypt, aes256Decrypt } = require("./../config/authentication");
 
 function homePage(request, response) {
     const error = request.query.error || null; 
@@ -24,40 +16,15 @@ function loginGET(request, response) {
     return response.render("login", { error }); 
 }
 
-function registerGET(request, response) {
-    return response.render("register");
-}
-
-async function registerUsuarioPOST(request, response) {
-    const { nombre, apellido, clave, usuario, email } = request.body;  
-    let encriptada = encryptPassword(clave);
-    try {
-        await pool.query("INSERT INTO usuarios (nombre, apellido, email, usuario, clave) VALUES (?, ?, ?, ?, ?)", 
-            [nombre, apellido, email, usuario, encriptada]);
-        const eliminarURL = "https://localhost:3000/deleteByEmail/" + encodeURIComponent(aes256Encrypt(usuario));
-        const confirmationEmail = await sendConfirmationEmail(email, usuario, clave, eliminarURL, response);
-        if (!confirmationEmail)
-            return response.status(500).json({ message: [{ message: "Error al enviar correo de confirmación." }] });
-        return response.status(201).json({ message: "Registro exitoso." });
-    } catch (error) {        
-        console.error("Error al registrar el usuario: ", error);
-        if (error.message.includes("USUARIO_UNICO"))
-            return response.status(500).json({ message: [{ message: "Error al registrar el nombre de usuario." }] });
-        else if (error.message.includes("EMAIL_UNICO"))
-           return response.status(500).json({ message: [{ message: "Error al registrar el email." }] });
-        return response.status(500).json({ message: [{ message: "Error al procesar la solicitud." }] });
-    }
-}
-
 async function loginUsuarioPOST(request, response) {
     const { usuario, clave } = request.body;
     try {
         const results = await pool.query("SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1", [usuario]);
         if (results[0].length === 0)
-            return response.redirect("/login?error=Usuario no encontrado.");
+            return response.redirect("/login?error=Credenciales incorrectas o no tiene permiso para acceder.");
         const userData = results[0][0];
         if (!comparePassword(clave, userData.clave)) 
-            return response.redirect("/login?error=Contraseña incorrecta.");
+            return response.redirect("/login?error=Credenciales incorrectas o no tiene permiso para acceder.");
         const token = await sendAuthEmail(userData.email, response);
         if (!token)
             return response.redirect("/login?error=Error al enviar correo de autenticación.");
@@ -98,8 +65,6 @@ module.exports = {
     homePage,
     politicy,
     loginGET,
-    registerGET,
-    registerUsuarioPOST,
     loginUsuarioPOST,
     authenticationUsuario,
     deleteByEmail

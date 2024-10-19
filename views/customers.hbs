@@ -6,7 +6,7 @@
         <div class="row">
             <!-- Filtro de clientes -->
             <div class="col-4">
-                <form class="container-card container-sticky-item" action="/dashboard/customers" method="POST" id="search">
+                <form class="container-card container-sticky-item" action="/dashboard/customers" method="POST">
                     <h2 class="container-subtitle text-center text-uppercase my-3">Filtro de clientes</h2>
                     <div class="input-group my-3">
                         <span class="input-group-text">
@@ -26,8 +26,8 @@
 
             <!-- Lista de clientes -->
             <div class="col-8">
-                <section class="row" id="customers-row">
-                    {{#each this.data}}
+                <section class="row">
+                    {{#each this.customers}}
                     <div class="col-10 mx-auto mb-4">
                         <button class="container-card container-card-accordion rounded-bottom-0">{{this.Surname}}</button>
                         <div class="panel bg-body-tertiary border border-dark">

@@ -1,22 +1,32 @@
 const express = require("express");
 const dashboard = express.Router();
 const dashboardController = require("./../controllers/dashboard");
-const { onlyAdmin, completeValidation } = require("./../config/middlewares");
+const { onlyLogged, completeValidation, onlyAdmin } = require("./../config/middlewares");
 
-dashboard.get("/", onlyAdmin, dashboardController.homePage);
+dashboard.get("/", onlyLogged, dashboardController.homePage);
 
-dashboard.get("/customers", onlyAdmin, dashboardController.customers)
+dashboard.get("/customers", onlyLogged, dashboardController.customers)
 
-dashboard.post("/customers", onlyAdmin, dashboardController.customersFilter);
+dashboard.post("/customers", onlyLogged, dashboardController.customersFilter);
 
-dashboard.get("/profile", onlyAdmin, dashboardController.profile);
+dashboard.get("/workers", onlyLogged, onlyAdmin, dashboardController.workers);
 
-dashboard.get("/changePrivacity", onlyAdmin, dashboardController.changePrivacity)
+dashboard.post("/workers", onlyLogged, onlyAdmin, dashboardController.workersFilter);
 
-dashboard.post("/updateWorker", onlyAdmin, completeValidation, dashboardController.updateworker)
+dashboard.post("/register", onlyLogged, onlyAdmin, completeValidation, dashboardController.registerWorker);
 
-dashboard.get("/deleteWorker", onlyAdmin, dashboardController.deleteWorker)
+dashboard.get("/updateAcceso/:id/:value", onlyLogged, onlyAdmin, dashboardController.updateAcceso);
 
-dashboard.get("/logout", onlyAdmin, dashboardController.logout);
+dashboard.get("/updateAdministrador/:id/:value", onlyLogged, onlyAdmin, dashboardController.updateAdministrador);
+
+dashboard.get("/profile", onlyLogged, dashboardController.profile);
+
+dashboard.get("/changePrivacity", onlyLogged, dashboardController.changePrivacity)
+
+dashboard.post("/updateWorker", onlyLogged, completeValidation, dashboardController.updateWorker)
+
+dashboard.get("/deleteWorker", onlyLogged, dashboardController.deleteWorker)
+
+dashboard.get("/logout", onlyLogged, dashboardController.logout);
 
 module.exports = dashboard ;

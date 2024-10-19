@@ -6,6 +6,16 @@ const nodemailer = require("nodemailer");
 const jsonwebtoken = require("jsonwebtoken");
 require("dotenv").config();
 
+function aes256Encrypt(data) {
+    const key = process.env.AES_256;
+    return aes256.encrypt(key, data);
+}
+
+function aes256Decrypt(encryptedData) {
+    const key = process.env.AES_256;
+    return aes256.decrypt(key, encryptedData);
+}
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -91,25 +101,18 @@ function createCookie(usuario, response) {
 
 async function checkCookie(request) {
     try {
-        const cookieJWT = request.headers.cookie.split("; ").find(cookie => cookie.startsWith("tokenKey="))?.slice(9); 
-        if (!cookieJWT) 
-            return false;
+        const cookieJWT = request.headers.cookie.split("; ").find(cookie => cookie.startsWith("tokenKey=")).slice(9); 
         const decodificada = jsonwebtoken.verify(cookieJWT, process.env.TOKEN_PRIVATE_KEY);
-        const results = await pool.query("SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1", [decodificada.data]);
-        return (results[0].length === 0) ? false : results[0][0];
+        const [results] = await pool.query("SELECT * FROM usuarios WHERE usuario = ? AND permiso = 1", [decodificada.data]);
+
+        if (results.length > 0) {
+            request.session.user = aes256Encrypt(JSON.stringify(results[0]));
+            return true;
+        }
+        return false;
     } catch (error) {
         return false;
     }
-}
-
-function aes256Encrypt(data) {
-    const key = process.env.AES_256;
-    return aes256.encrypt(key, data);
-}
-
-function aes256Decrypt(encryptedData) {
-    const key = process.env.AES_256;
-    return aes256.decrypt(key, encryptedData);
 }
 
 module.exports = {

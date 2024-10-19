@@ -1,5 +1,5 @@
 export function registrarUsuario() {        
-    sendForm((result) => alertify.success("Usuario registrado correctamente"), 
+    sendForm((result) => alertify.success("Trabajador registrado correctamente"), 
     (error) => {
         console.error("Error al enviar el formulario: ", error);    
         const result = error.response.data;            

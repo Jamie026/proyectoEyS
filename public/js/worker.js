@@ -43,7 +43,7 @@ async function deleteWorker() {
     }
 }
 
-export function customersList() {
+export function activeAccordion() {
     const accordion = document.getElementsByClassName("container-card-accordion");
     Array.from(accordion).forEach(card => {
         card.addEventListener("click", function() {

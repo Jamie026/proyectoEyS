@@ -1,12 +1,12 @@
 const express = require("express");
 const storage = express.Router();
 const storageController = require("./../controllers/storage");
-const { onlyAdmin } = require("./../config/middlewares");
+const { onlyLogged } = require("./../config/middlewares");
 
-storage.get("/cardTypes", onlyAdmin, storageController.cardTypes);
+storage.get("/cardTypes", onlyLogged, storageController.cardTypes);
 
-storage.get("/customersByCountry", onlyAdmin, storageController.customersByCountry);
+storage.get("/customersByCountry", onlyLogged, storageController.customersByCountry);
 
-storage.get("/generalInformation", onlyAdmin, storageController.generalInformation);
+storage.get("/generalInformation", onlyLogged, storageController.generalInformation);
 
 module.exports = storage ;

@@ -1,4 +1,4 @@
-const { checkCookie } = require("./authentication");
+const { checkCookie, aes256Decrypt } = require("./authentication");
 const { Validator } = require("node-input-validator");
 const niv = require('node-input-validator');
 
@@ -19,16 +19,17 @@ niv.extend("alphaNumeric", ({ value }) => /^[A-Za-z0-9*]+$/.test(value), "El cam
 
 async function onlyPublic(request, response, next) {
     const logued = await checkCookie(request);
-    if (!logued) 
-        return next();
-    return response.redirect("/dashboard");
+    return (!logued) ? next() : response.redirect("/dashboard");
+}
+
+async function onlyLogged(request, response, next) {
+    const logued = await checkCookie(request);
+    return (logued) ? next() : response.redirect("/");
 }
 
 async function onlyAdmin(request, response, next) {
-    const logued = await checkCookie(request);
-    if (logued) 
-        return next();
-    return response.redirect("/");
+    const workerData = JSON.parse(aes256Decrypt(request.session.user));
+    return (workerData.administrador == 1) ? next() : response.redirect("/dashboard?error=No tiene autorización para esta sección");
 }
 
 async function completeValidation(request, response, next) {
@@ -60,6 +61,7 @@ async function simpleValidation(request, response, next) {
 
 module.exports = {
     onlyPublic,
+    onlyLogged,
     onlyAdmin,
     completeValidation,
     simpleValidation
