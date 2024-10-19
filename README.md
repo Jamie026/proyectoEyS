@@ -9,13 +9,13 @@
     </p>
     <h2>🚀 Funcionalidades Principales</h2>
     <ul>
-      <li>✔️ Análisis del churn de clientes para prevenir bajas.</li>
-      <li>🔒 Gestión de roles y permisos para los empleados.</li>
-      <li>👥 Solo los administradores pueden administrar a otros empleados.</li>
-      <li>⚠️ Control de acceso granular: no todos pueden ver los datos de clientes ni otros empleados.</li>
-      <li>🔐 <strong>Enfoque en seguridad y privacidad</strong>, utilizando middleware para validar roles.</li>
-      <li>📧 Implementación de <strong>Multi-Factor Authentication (MFA)</strong> por correo en el inicio de sesión.</li>
-      <li>🌐 Uso de <strong>SSL</strong> para asegurar que las cookies y sesiones se manejen solo en <code>https</code>.</li>
+      <li>✔️ Monitoreo proactivo del comportamiento de los usuarios con el fin de predecir y prevenir su deserción.</li>
+      <li>🔒 Control detallado sobre las funciones y niveles de acceso que cada empleado tiene dentro del sistema..</li>
+      <li>👥 Solo los administradores tienen la facultad de gestionar cuentas de otros empleados y sus permisos.</li>
+      <li>⚠️ Acceso limitado a datos de clientes y personal, garantizando que solo quienes lo necesitan puedan ver esta información.</li>
+      <li>🔐 Validación de roles y permisos en cada acción crítica, garantizando un entorno seguro y regulado.</li>
+      <li>📧 Mayor protección en los inicios de sesión, exigiendo la verificación mediante códigos enviados al correo del usuario.</li>
+      <li>🌐 Todo el tráfico se maneja bajo HTTPS, asegurando la confidencialidad de la información y evitando accesos no autorizados.</li>
     </ul>
     <h2>🛠️ Tecnologías Utilizadas</h2>
     <div class="tech-icons">
@@ -29,12 +29,24 @@
     </div>
     <h2>🔒 Seguridad</h2>
     <ul>
-      <li>Middleware para validar los roles de usuario y controlar el acceso.</li>
-      <li>Autenticación multifactor (MFA) mediante correo electrónico durante el inicio de sesión.</li>
-      <li>Uso de certificados SSL para proteger la transmisión de datos.</li>
-      <li>Cifrado de contraseñas y datos sensibles guardados en las sesiones de los usuarios.</li>
-      <li>Validaciones en todos los formularios para evitar <strong>SQL Injection</strong>.</li>
-      <li>La <strong>cookie de sesión</strong> se encripta utilizando una llave específica, que también se usa para desencriptarla en cada solicitud, garantizando la identidad del usuario en cada llamada.</li>
+      <li>Implementación de un middleware que verifica los roles de usuario, asegurando que cada persona tenga el nivel de acceso adecuado.</li>
+      <li>Proceso de inicio de sesión que incluye una verificación adicional mediante códigos enviados por correo electrónico, añadiendo una capa extra de seguridad.</li>
+      <li>Implementación de certificados SSL que garantizan la seguridad en la transmisión de información a través de la red, manteniendo la confidencialidad.</li>
+      <li>Todos los datos sensibles, como las contraseñas de los empleados o la información de las tarjetas de los clientes, se cifran utilizando AES directamente en la base de datos, o se envían ya cifrados desde el servidor mediante una librería especializada. Aunque un empleado tenga acceso a la lista de clientes, no podrá ver sus datos confidenciales a menos que cuente con la clave de descifrado adecuada.</li>
+      <li>Se llevan a cabo validaciones exhaustivas en todos los formularios para mitigar el riesgo de ataques de inyección SQL, asegurando la integridad de la base de datos.</li>
+      <li>La cookie de sesión se encripta con una llave específica, que también se utiliza para desencriptarla en cada solicitud, asegurando así la identidad del usuario en cada interacción.</li>
+      <li>Se mantiene un log en MySQL que registra todas las conexiones a la base de datos y las operaciones realizadas. Los mensajes de error son diseñados de manera general para no revelar detalles sobre los campos correctos o incorrectos, dificultando así la tarea de posibles atacantes.</li>
+    </ul>
+    <h2>🛡️ Privacidad</h2>
+    <ul>
+      <li>Al registrar a un empleado, se le enviará un correo detallando la información guardada en nuestra base de datos, el uso previsto de dichos datos y sus credenciales de acceso.</li>
+      <li>El correo incluirá dos enlaces: uno para acceder a las políticas de privacidad, donde se notificará al empleado sobre cualquier cambio, y otro enlace para eliminar sus datos fácilmente si lo desea.</li>
+      <li>El empleado podrá eliminar su cuenta desde la sección "Mi Perfil" una vez que tenga acceso. Para ello, deberá tener permisos de un administrador.</li>
+      <li>El empleado podrá ingresar sus credenciales, pero no tendrá acceso a las funcionalidades del sistema hasta que un administrador le otorgue los permisos correspondientes. Estos permisos pueden solicitarse desde la sección de "Soporte".</li>
+      <li>En "Mi Perfil", el empleado podrá visualizar, descargar en un formato legible, corregir o eliminar permanentemente sus datos de la base de datos.</li>
+      <li>El empleado tendrá la opción de restringir la visibilidad de su nombre de usuario, decidiendo si los administradores pueden verlo o no.</li>
+      <li>Las contraseñas serán cifradas tanto al momento del registro como cuando se actualicen, garantizando su seguridad.</li>
+      <li>Se implementará autenticación de múltiples factores (MFA) mediante el envío de códigos a través de correo electrónico para cada inicio de sesión.</li>
     </ul>
     <h2>📂 Estructura del Proyecto</h2>
     <pre>
