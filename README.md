@@ -18,37 +18,15 @@
       <li>🌐 Uso de <strong>SSL</strong> para asegurar que las cookies y sesiones se manejen solo en <code>https</code>.</li>
     </ul>
     <h2>🛠️ Tecnologías Utilizadas</h2>
-    <ul>
-      <li>
-        <img src="https://img.icons8.com/color/48/000000/nodejs.png" alt="Node.js">
-        Node.js
-      </li>
-      <li>
-        <img src="https://img.icons8.com/fluency/48/000000/express-js.png" alt="Express.js">
-        Express.js
-      </li>
-      <li>
-        <img src="https://cdn.iconscout.com/icon/free/png-256/free-handlebars-logo-icon-download-in-svg-png-gif-file-formats--company-brand-world-logos-vol-9-pack-icons-282936.png" 
-             alt="Handlebars" style="width:30px; height:30px;">
-        Handlebars
-      </li>
-      <li>
-        <img src="https://img.icons8.com/color/48/000000/mysql-logo.png" alt="MySQL">
-        MySQL 8.0
-      </li>
-      <li>
-        <img src="https://img.icons8.com/color/48/000000/bootstrap.png" alt="Bootstrap">
-        Bootstrap
-      </li>
-      <li>
-        <img src="https://img.icons8.com/color/48/000000/css3.png" alt="CSS3">
-        CSS3
-      </li>
-      <li>
-        <img src="https://img.icons8.com/color/48/000000/javascript--v1.png" alt="JavaScript">
-        JS
-      </li>
-    </ul>
+    <div class="tech-icons">
+      <img src="https://img.icons8.com/color/48/000000/nodejs.png" alt="Node.js">
+      <img src="https://img.icons8.com/color/48/000000/mysql-logo.png" alt="MySQL">
+      <img src="https://img.icons8.com/color/48/000000/bootstrap.png" alt="Bootstrap">
+      <img src="https://cdn.iconscout.com/icon/free/png-256/free-handlebars-logo-icon-download-in-svg-png-gif-file-formats--company-brand-world-logos-vol-9-pack-icons-282936.png" 
+             alt="Handlebars" style="width:30px; height:30px;">      
+      <img src="https://img.icons8.com/color/48/000000/css3.png" alt="CSS3">
+      <img src="https://img.icons8.com/color/48/000000/javascript--v1.png" alt="JavaScript">
+    </div>
     <h2>🔒 Seguridad</h2>
     <ul>
       <li>Middleware para validar los roles de usuario y controlar el acceso.</li>
