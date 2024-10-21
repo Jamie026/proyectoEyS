@@ -1,5 +1,15 @@
 const pool = require("./../config/db");
 
+async function ageCustomersExited(request, response){
+    try {
+        const results = await pool.query("SELECT age FROM customers WHERE Exited = 1");
+        return response.status(200).json({ data: results[0], message: "Ok." });
+    } catch (error) {
+        console.error("Error ejecutando las consultas: ", error);
+        return response.status(500).json({ message: "Error al conectar con la BD." });
+    }
+}
+
 async function cardTypes(request, response) {
     try {
         const results = await pool.query("SELECT cardType, COUNT(*) as 'Cantidad' FROM customers GROUP BY cardType");
@@ -51,6 +61,7 @@ async function generalInformation(request, response) {
 }
 
 module.exports = {
+    ageCustomersExited,
     cardTypes,
     customersByCountry,
     generalInformation

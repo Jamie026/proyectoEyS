@@ -24,7 +24,11 @@ export async function getGeneralInformation() {
         document.getElementById("notCards").textContent = notCreditCard[0].notCard;
     
         if (total[0].Total > 0) {
-            await Promise.all([getCardTypes(document.getElementById("doughnut")), getCustomersByCountry(document.getElementById("bar"))]);
+            await Promise.all([
+                getCardTypes(document.getElementById("cardType")), 
+                getCustomersByCountry(document.getElementById("country")),
+                getAgeCustomersExited(document.getElementById("age"))
+            ]);
             alertify.success("Dashboard cargado con éxito.");
         }
         else
@@ -48,14 +52,14 @@ async function getCustomersByCountry(container) {
         data: {
             labels: active.map(customer => customer.Geography),
             datasets: [
-                { label: "Clientes activos", data: dataActive, borderColor: Utils.CHART_COLORS.blue, backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5) },
-                { label: "Clientes inactivos", data: dataInactive, borderColor: Utils.CHART_COLORS.red, backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5) }
+                { label: "Clientes activos", data: dataActive, borderColor: Utils.CHART_COLORS.blue, backgroundColor: Utils.CHART_COLORS.blue },
+                { label: "Clientes inactivos", data: dataInactive, borderColor: Utils.CHART_COLORS.red, backgroundColor: Utils.CHART_COLORS.red }
             ]
         },
         options: {
             responsive: false,
             plugins: {
-                legendMargin: { margin: 50 },
+                legendMargin: { margin: 30 },
                 title: { display: true, text: "Clientes Activos e Inactivos por país", color: "black", font: { size: 18, family: "'Poppins', 'Roboto', sans-serif" } },
                 legend: { labels: { color: "black", font: { family: "'Poppins', 'Roboto', sans-serif", size: 14 } } }
             }
@@ -78,13 +82,13 @@ async function getCardTypes(container) {
             datasets: [{
                 data: quantities,
                 hoverOffset: 4,
-                backgroundColor: Object.values(Utils.CHART_COLORS),
+                backgroundColor: Object.values(Utils.CHART_COLORS)
             }]
         },
         options: {
             responsive: false,
             plugins: {
-                legendMargin: { margin: 50 },
+                legendMargin: { margin: 30 },
                 title: { display: true, text: "Distribución de tipos de tarjetas de clientes", color: "black", font: { size: 18, family: "'Poppins', 'Roboto', sans-serif" } },
                 datalabels: {
                     formatter: (value, ctx) => {
@@ -98,5 +102,58 @@ async function getCardTypes(container) {
             }
         },
         plugins: [ChartDataLabels, legendMargin]
+    });
+}
+
+async function getAgeCustomersExited(container) {
+    const result = await axios.get("https://localhost:3000/storage/ageCustomersExited");
+    const ageData = result.data.data.map(item => item.age);
+    container.height = 400;
+
+    const rangos = [
+        { label: "18-25", min: 18, max: 25 },
+        { label: "26-35", min: 26, max: 35 },
+        { label: "36-45", min: 36, max: 45 },
+        { label: "46-60", min: 46, max: 60 },
+        { label: "61-75", min: 61, max: 75 },
+        { label: "76+", min: 76, max: Infinity }
+    ];
+
+    const conteoRangos = Object.fromEntries(rangos.map(rango => [rango.label, 0]));
+
+    ageData.forEach(edad => {
+        const rango = rangos.find(rango => edad >= rango.min && edad <= rango.max);
+        conteoRangos[rango.label]++;
+    });
+
+    const datasets = [{
+        label: "Clientes retirados",
+        data: Object.values(conteoRangos),
+        backgroundColor: [
+            "rgb(75, 192, 192)",
+            "rgb(54, 162, 235)",
+            "rgb(255, 206, 86)",
+            "rgb(153, 102, 255)",
+            "rgb(255, 159, 64)",
+            "rgb(255, 99, 132)"
+        ]
+    }];
+
+    new Chart(container, {
+        type: "bar",
+        data: {
+            labels: rangos.map(rango => rango.label),
+            datasets: datasets
+        },
+        options: {
+            scales: { y: { beginAtZero: true, grace: "5%" } },
+            responsive: false,
+            plugins: {
+                legendMargin: { margin: 30 },
+                title: { display: true, text: "Clientes Retirados por Rango de Edad", color: "black", font: { size: 18, family: "'Poppins', 'Roboto', sans-serif" } },
+                legend: { labels: { color: "black", font: { family: "'Poppins', 'Roboto', sans-serif", size: 14 } } }
+            }
+        },
+        plugins: [legendMargin]
     });
 }
